@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UzTools — Onlayn Vositalar To'plami</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --bg4: #222230;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --accent4: #f7971e;
+    --accent5: #00c6fb;
+    --text: #f0f0ff;
+    --text2: #a0a0c0;
+    --text3: #6060a0;
+    --border: rgba(108,99,255,0.2);
+    --card-bg: #13131e;
+    --success: #43e97b;
+    --warning: #f7971e;
+    --danger: #ff4757;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 8px 32px rgba(108,99,255,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* === HEADER === */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent5));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+  }
+  .logo span { font-weight: 300; opacity: 0.7; }
+  nav { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  nav a {
+    color: var(--text2); text-decoration: none; padding: 6px 14px;
+    border-radius: 8px; font-size: 0.85rem; font-weight: 500;
+    transition: all 0.2s; cursor: pointer;
+  }
+  nav a:hover, nav a.active { color: var(--text); background: var(--bg3); }
+  .header-right { display: flex; gap: 0.5rem; align-items: center; }
+  #clockDisplay {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem; color: var(--accent5);
+    background: var(--bg3); padding: 4px 12px; border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* === HERO === */
+  .hero {
+    text-align: center; padding: 5rem 2rem 3rem;
+    background: radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.12) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(108,99,255,0.15); border: 1px solid var(--border);
+    padding: 6px 16px; border-radius: 100px; font-size: 0.8rem;
+    color: var(--accent); margin-bottom: 1.5rem;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(108,99,255,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(108,99,255,0); }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent5) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.1rem; color: var(--text2); max-width: 600px; margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--text3); margin-top: 2px; }
+
+  /* === SEARCH === */
+  .search-bar {
+    max-width: 600px; margin: 0 auto 3rem;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%; padding: 14px 50px 14px 20px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); color: var(--text);
+    font-size: 1rem; font-family: 'Outfit', sans-serif;
+    outline: none; transition: all 0.3s;
+  }
+  .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,99,255,0.2); }
+  .search-bar input::placeholder { color: var(--text3); }
+  .search-icon {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 1.2rem;
+  }
+
+  /* === MAIN LAYOUT === */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+  .section { padding: 3rem 0; }
+  .section-title {
+    font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); display: inline-block;
+  }
+  .section-sub { color: var(--text2); margin-bottom: 2rem; font-size: 0.95rem; }
+
+  /* === CATEGORY TABS === */
+  .cat-tabs {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .cat-tab {
+    padding: 8px 20px; border-radius: 100px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text2); cursor: pointer; font-size: 0.85rem;
+    font-family: 'Outfit', sans-serif; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .cat-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-tab.active {
+    background: var(--accent); border-color: var(--accent);
+    color: white;
+  }
+
+  /* === TOOL GRID === */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .tool-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    transition: all 0.3s; cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .tool-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent5));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .tool-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(108,99,255,0.4); }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 1rem; }
+  .tool-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .tool-icon.purple { background: rgba(108,99,255,0.15); }
+  .tool-icon.cyan { background: rgba(0,198,251,0.15); }
+  .tool-icon.green { background: rgba(67,233,123,0.15); }
+  .tool-icon.orange { background: rgba(247,151,30,0.15); }
+  .tool-icon.pink { background: rgba(255,101,132,0.15); }
+  .tool-icon.teal { background: rgba(29,233,182,0.15); }
+  .tool-name { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+  .tool-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.5; }
+  .tool-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 600; margin-top: 6px;
+    background: rgba(108,99,255,0.2); color: var(--accent);
+  }
+  .tool-badge.free { background: rgba(67,233,123,0.2); color: var(--accent3); }
+
+  /* === PANELS === */
+  .panel {
+    display: none; padding: 3rem 0;
+  }
+  .panel.active { display: block; }
+  .panel-header {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+  }
+  .back-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); padding: 8px 16px; border-radius: var(--radius);
+    cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Outfit', sans-serif;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--accent); }
+  .panel-title { font-size: 1.8rem; font-weight: 700; }
+
+  /* === FORM ELEMENTS === */
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label {
+    display: block; font-size: 0.85rem; font-weight: 500;
+    color: var(--text2); margin-bottom: 6px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%; padding: 12px 16px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-size: 0.95rem; font-family: 'Outfit', sans-serif;
+    outline: none; transition: all 0.2s;
+  }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+  }
+  .form-select option { background: var(--bg2); }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--text3); }
+
+  .btn {
+    padding: 10px 24px; border-radius: var(--radius);
+    border: none; cursor: pointer; font-size: 0.9rem;
+    font-family: 'Outfit', sans-serif; font-weight: 600;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #5a52e0; transform: translateY(-1px); }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: var(--success); color: #000; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-warning { background: var(--warning); color: #000; }
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+
+  .result-box {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem 1.25rem;
+    font-size: 0.95rem; line-height: 1.7; min-height: 60px;
+    word-break: break-all;
+  }
+  .result-box.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+  .result-box.large { font-size: 2.5rem; font-weight: 700; color: var(--accent); text-align: center; padding: 2rem; }
+
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 200px; }
+  .col-2 { flex: 2; min-width: 300px; }
+
+  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+  .alert {
+    padding: 12px 16px; border-radius: var(--radius);
+    font-size: 0.85rem; margin-bottom: 1rem;
+  }
+  .alert-success { background: rgba(67,233,123,0.1); border: 1px solid rgba(67,233,123,0.3); color: var(--success); }
+  .alert-danger { background: rgba(255,71,87,0.1); border: 1px solid rgba(255,71,87,0.3); color: var(--danger); }
+  .alert-info { background: rgba(0,198,251,0.1); border: 1px solid rgba(0,198,251,0.3); color: var(--accent5); }
+  .alert-warning { background: rgba(247,151,30,0.1); border: 1px solid rgba(247,151,30,0.3); color: var(--warning); }
+
+  .copy-btn {
+    float: right; background: var(--bg4); border: 1px solid var(--border);
+    color: var(--text2); padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; font-size: 0.75rem; font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* === CALCULATOR === */
+  .calc-wrap { max-width: 360px; margin: 0 auto; }
+  .calc-display {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    text-align: right; margin-bottom: 1rem;
+  }
+  .calc-expr { font-size: 0.9rem; color: var(--text3); min-height: 20px; }
+  .calc-num { font-size: 2.5rem; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .calc-btn {
+    padding: 18px; border: none; border-radius: var(--radius);
+    font-size: 1.1rem; font-weight: 600; cursor: pointer;
+    font-family: 'Outfit', sans-serif; transition: all 0.15s;
+  }
+  .calc-btn:active { transform: scale(0.95); }
+  .calc-btn.num { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .calc-btn.num:hover { background: var(--bg4); }
+  .calc-btn.op { background: rgba(108,99,255,0.2); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
+  .calc-btn.op:hover { background: rgba(108,99,255,0.35); }
+  .calc-btn.eq { background: var(--accent); color: white; }
+  .calc-btn.eq:hover { background: #5a52e0; }
+  .calc-btn.clear { background: rgba(255,71,87,0.2); color: var(--danger); border: 1px solid rgba(255,71,87,0.3); }
+  .calc-btn.clear:hover { background: rgba(255,71,87,0.35); }
+  .calc-btn.zero { grid-column: span 2; }
+
+  /* === BMI === */
+  .bmi-meter {
+    height: 20px; border-radius: 10px; margin: 1rem 0;
+    background: linear-gradient(90deg, #43e97b 0%, #f7971e 40%, #ff4757 70%, #c00 100%);
+    position: relative;
+  }
+  .bmi-needle {
+    position: absolute; top: -6px; width: 4px; height: 32px;
+    background: white; border-radius: 2px; transform: translateX(-50%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    transition: left 0.5s ease;
+  }
+  .bmi-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; color: var(--text3); margin-top: 4px;
+  }
+  .bmi-result { text-align: center; padding: 1rem; }
+  .bmi-num { font-size: 3rem; font-weight: 800; }
+  .bmi-cat { font-size: 1rem; color: var(--text2); margin-top: 4px; }
+
+  /* === COLOR PICKER === */
+  .color-preview {
+    height: 100px; border-radius: var(--radius); margin-bottom: 1rem;
+    border: 1px solid var(--border); transition: background 0.3s;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+  }
+  .color-palette {
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 1rem;
+  }
+  .palette-color {
+    height: 36px; border-radius: 8px; cursor: pointer;
+    transition: transform 0.2s; border: 2px solid transparent;
+  }
+  .palette-color:hover { transform: scale(1.15); border-color: white; }
+
+  /* === QR CODE === */
+  .qr-container {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 200px; background: white; border-radius: var(--radius);
+    padding: 1rem; margin: 1rem 0;
+  }
+  #qrCanvas { max-width: 100%; }
+
+  /* === PASSWORD === */
+  .strength-bar {
+    height: 6px; border-radius: 3px; margin: 8px 0;
+    background: var(--bg4); overflow: hidden;
+  }
+  .strength-fill {
+    height: 100%; border-radius: 3px; transition: all 0.3s;
+  }
+  .strength-text { font-size: 0.8rem; color: var(--text2); }
+  .char-options { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.5rem 0; }
+  .checkbox-label {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; font-size: 0.85rem; color: var(--text2);
+    user-select: none;
+  }
+  .checkbox-label input { accent-color: var(--accent); cursor: pointer; }
+
+  /* === TIMER === */
+  .timer-display {
+    text-align: center; padding: 2rem;
+    font-size: 4rem; font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); letter-spacing: 4px;
+  }
+  .timer-controls { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .timer-presets { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0; }
+  .preset-btn {
+    padding: 6px 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text2); cursor: pointer; font-size: 0.8rem;
+    font-family: 'Outfit', sans-serif; transition: all 0.2s;
+  }
+  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* === NOTES === */
+  .notes-sidebar {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    background: var(--bg3); border-radius: var(--radius); padding: 1rem;
+    max-height: 400px; overflow-y: auto;
+  }
+  .note-item {
+    background: var(--bg4); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .note-item:hover, .note-item.active { border-color: var(--accent); }
+  .note-item-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+  .note-item-preview { font-size: 0.75rem; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .note-item-date { font-size: 0.7rem; color: var(--text3); margin-top: 4px; }
+
+  /* === CURRENCY === */
+  .currency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .currency-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem; text-align: center;
+  }
+  .currency-flag { font-size: 1.5rem; margin-bottom: 4px; }
+  .currency-code { font-size: 0.8rem; color: var(--text3); }
+  .currency-amount { font-size: 1.2rem; font-weight: 700; color: var(--accent5); margin-top: 4px; }
+
+  /* === UNIT CONVERTER === */
+  .unit-row { display: flex; align-items: center; gap: 1rem; }
+  .unit-arrow { color: var(--accent); font-size: 1.5rem; }
+  .converter-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .conv-tab {
+    padding: 6px 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text2); cursor: pointer; font-size: 0.82rem;
+    font-family: 'Outfit', sans-serif; transition: all 0.2s;
+  }
+  .conv-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .conv-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  /* === HASH === */
+  .hash-method { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .method-btn {
+    padding: 6px 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text2); cursor: pointer; font-size: 0.82rem;
+    font-family: 'Outfit', sans-serif; transition: all 0.2s;
+  }
+  .method-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* === TEXT TOOLS === */
+  .text-actions {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;
+  }
+  .text-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
+  .text-stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  .text-stat-label { font-size: 0.7rem; color: var(--text3); }
+
+  /* === PROGRESS === */
+  progress { display: none; }
+  .loader { display: none; text-align: center; padding: 2rem; color: var(--text2); }
+  .spinner {
+    width: 32px; height: 32px; border: 3px solid var(--bg3);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* === FOOTER === */
+  footer {
+    margin-top: 4rem;
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .footer-logo {
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent5));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .footer-desc { color: var(--text3); font-size: 0.9rem; max-width: 500px; margin: 0 auto 2rem; }
+  .footer-links {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .footer-links a {
+    color: var(--text2); text-decoration: none; font-size: 0.85rem;
+    cursor: pointer; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-bottom { color: var(--text3); font-size: 0.8rem; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    header { padding: 0 1rem; }
+    nav { display: none; }
+    .hero { padding: 3rem 1rem 2rem; }
+    .hero h1 { font-size: 2rem; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .timer-display { font-size: 3rem; }
+    .calc-wrap { max-width: 100%; }
+  }
+
+  /* === ANIMATIONS === */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .slide-in { animation: slideIn 0.3s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: none; } }
+
+  /* === TAG CLOUD === */
+  .tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; margin: 3px; border: 1px solid var(--border); color: var(--text2); background: var(--bg3); }
+
+  /* === TOOLTIP === */
+  [title] { cursor: help; }
+
+  /* === RANGE === */
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 6px;
+    background: var(--bg4); border-radius: 3px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+  }
+
+  /* === TABLE === */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th { background: var(--bg3); color: var(--text2); padding: 10px 14px; text-align: left; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(108,99,255,0.05); }
+
+  /* === CHECKBOX TOGGLE === */
+  .toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .toggle-switch {
+    width: 44px; height: 24px; background: var(--bg4);
+    border-radius: 12px; position: relative; transition: background 0.3s;
+    border: 1px solid var(--border);
+  }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--text3); transition: all 0.3s;
+  }
+  .toggle input { display: none; }
+  .toggle input:checked + .toggle-switch { background: var(--accent); border-color: var(--accent); }
+  .toggle input:checked + .toggle-switch::after { left: 22px; background: white; }
+  .toggle-label { font-size: 0.85rem; color: var(--text2); }
+
+  /* === NUMBER INPUT === */
+  .num-input-wrap { display: flex; align-items: center; gap: 0; }
+  .num-btn {
+    width: 36px; height: 42px; background: var(--bg4); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .num-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .num-btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .num-btn:hover { background: var(--bg3); color: var(--accent); }
+  .num-input-wrap .form-input {
+    border-radius: 0; border-left: none; border-right: none;
+    text-align: center; width: 80px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="showHome()">Uz<span>Tools</span></div>
+  <nav>
+    <a onclick="showHome()" id="nav-home" class="active">🏠 Bosh sahifa</a>
+    <a onclick="openTool('calculator')" id="nav-calc">🧮 Kalkulyator</a>
+    <a onclick="openTool('converter')" id="nav-conv">⚖️ Konverter</a>
+    <a onclick="openTool('texttools')" id="nav-text">📝 Matn</a>
+    <a onclick="openTool('timer')" id="nav-timer">⏱️ Taymer</a>
+    <a onclick="openTool('notes')" id="nav-notes">🗒️ Eslatmalar</a>
+  </nav>
+  <div class="header-right">
+    <div id="clockDisplay">00:00:00</div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div id="page-home">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">✨ 100% Bepul • Reklamsiz • Oflayn ishlaydi</div>
+    <h1>Hamma uchun<br><span class="gradient">Foydali Vositalar</span></h1>
+    <p>Kalkulyator, konverter, matn tahlili, taymer, eslatmalar, QR kod, parol yaratuvchi va boshqa ko'plab onlayn vositalar — hammasi bir joyda.</p>
+    <div class="search-bar container">
+      <input type="text" id="globalSearch" placeholder="Vosita qidiring... (masalan: kalkulyator, taymer)" oninput="searchTools(this.value)">
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="toolCount">20+</div><div class="stat-label">Vositalar</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Bepul</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Reklama</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Foydalanish</div></div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- CATEGORY TABS -->
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="filterCat('all', this)">Hammasi</button>
+      <button class="cat-tab" onclick="filterCat('math', this)">🧮 Matematika</button>
+      <button class="cat-tab" onclick="filterCat('text', this)">📝 Matn</button>
+      <button class="cat-tab" onclick="filterCat('convert', this)">⚖️ Konverter</button>
+      <button class="cat-tab" onclick="filterCat('time', this)">⏱️ Vaqt</button>
+      <button class="cat-tab" onclick="filterCat('security', this)">🔐 Xavfsizlik</button>
+      <button class="cat-tab" onclick="filterCat('color', this)">🎨 Rang</button>
+      <button class="cat-tab" onclick="filterCat('health', this)">❤️ Sog'liq</button>
+      <button class="cat-tab" onclick="filterCat('other', this)">🔧 Boshqalar</button>
+    </div>
+
+    <!-- TOOLS GRID -->
+    <div class="tools-grid" id="toolsGrid">
+      <!-- Tools rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- === TOOL PANELS === -->
+<div class="container">
+
+<!-- CALCULATOR PANEL -->
+<div class="panel" id="panel-calculator">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🧮 Ilmiy Kalkulyator</h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="calc-wrap fade-in">
+        <div class="calc-display">
+          <div class="calc-expr" id="calcExpr"></div>
+          <div class="calc-num" id="calcNum">0</div>
+        </div>
+        <div class="calc-grid">
+          <button class="calc-btn clear" onclick="calcClear()">AC</button>
+          <button class="calc-btn op" onclick="calcSign()">+/-</button>
+          <button class="calc-btn op" onclick="calcPercent()">%</button>
+          <button class="calc-btn op" onclick="calcOp('/')">÷</button>
+
+          <button class="calc-btn num" onclick="calcNum('7')">7</button>
+          <button class="calc-btn num" onclick="calcNum('8')">8</button>
+          <button class="calc-btn num" onclick="calcNum('9')">9</button>
+          <button class="calc-btn op" onclick="calcOp('*')">×</button>
+
+          <button class="calc-btn num" onclick="calcNum('4')">4</button>
+          <button class="calc-btn num" onclick="calcNum('5')">5</button>
+          <button class="calc-btn num" onclick="calcNum('6')">6</button>
+          <button class="calc-btn op" onclick="calcOp('-')">−</button>
+
+          <button class="calc-btn num" onclick="calcNum('1')">1</button>
+          <button class="calc-btn num" onclick="calcNum('2')">2</button>
+          <button class="calc-btn num" onclick="calcNum('3')">3</button>
+          <button class="calc-btn op" onclick="calcOp('+')">+</button>
+
+          <button class="calc-btn num zero" onclick="calcNum('0')">0</button>
+          <button class="calc-btn num" onclick="calcDot()">.</button>
+          <button class="calc-btn eq" onclick="calcEquals()">=</button>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 style="margin-bottom:1rem;color:var(--text2);">Ilmiy funksiyalar</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem;">
+        <button class="btn btn-secondary" onclick="calcSci('sqrt')">√x</button>
+        <button class="btn btn-secondary" onclick="calcSci('square')">x²</button>
+        <button class="btn btn-secondary" onclick="calcSci('cube')">x³</button>
+        <button class="btn btn-secondary" onclick="calcSci('sin')">sin</button>
+        <button class="btn btn-secondary" onclick="calcSci('cos')">cos</button>
+        <button class="btn btn-secondary" onclick="calcSci('tan')">tan</button>
+        <button class="btn btn-secondary" onclick="calcSci('log')">log</button>
+        <button class="btn btn-secondary" onclick="calcSci('ln')">ln</button>
+        <button class="btn btn-secondary" onclick="calcSci('inv')">1/x</button>
+        <button class="btn btn-secondary" onclick="calcSci('pi')">π</button>
+        <button class="btn btn-secondary" onclick="calcSci('e')">e</button>
+        <button class="btn btn-secondary" onclick="calcSci('abs')">|x|</button>
+      </div>
+      <h3 style="margin-bottom:1rem;color:var(--text2);">Hisoblash tarixi</h3>
+      <div id="calcHistory" style="max-height:220px;overflow-y:auto;">
+        <p style="color:var(--text3);font-size:0.85rem;">Hali hech narsa hisoblanmagan</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEXT TOOLS PANEL -->
+<div class="panel" id="panel-texttools">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">📝 Matn Vositalari</h2>
+  </div>
+  <div class="row" style="margin-bottom:1rem;">
+    <div class="text-stat"><div class="text-stat-num" id="tCharCount">0</div><div class="text-stat-label">Belgi</div></div>
+    <div class="text-stat"><div class="text-stat-num" id="tWordCount">0</div><div class="text-stat-label">So'z</div></div>
+    <div class="text-stat"><div class="text-stat-num" id="tLineCount">0</div><div class="text-stat-label">Qator</div></div>
+    <div class="text-stat"><div class="text-stat-num" id="tSentCount">0</div><div class="text-stat-label">Gap</div></div>
+    <div class="text-stat"><div class="text-stat-num" id="tReadTime">0</div><div class="text-stat-label">daqiqa o'qish</div></div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Matn kiriting</label>
+    <textarea class="form-textarea" id="textInput" rows="8" placeholder="Bu yerga matn yozing yoki joylashtiring..." oninput="updateTextStats()" style="min-height:200px;"></textarea>
+  </div>
+  <div class="text-actions">
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('upper')">KATTA HARF</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('lower')">kichik harf</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('title')">Sarlavha Harfi</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('sentence')">Gap harfi</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('reverse')">esreveR</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('trim')">Bo'shliqlarni tozala</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('removeDup')">Takrorlarni o'chir</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('sort')">Satralarni tartiblash</button>
+    <button class="btn btn-secondary btn-sm" onclick="textTransform('shuffleLines')">Satralarni aralashtir</button>
+    <button class="btn btn-secondary btn-sm" onclick="copyText('textInput')">📋 Nusxa</button>
+    <button class="btn btn-danger btn-sm" onclick="clearText()">🗑️ Tozala</button>
+  </div>
+  <div class="divider"></div>
+  <div class="row">
+    <div class="col">
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Qidirish va almashtirish</h4>
+      <div class="form-group">
+        <input class="form-input" id="findText" placeholder="Topish...">
+      </div>
+      <div class="form-group">
+        <input class="form-input" id="replaceText" placeholder="Almashtirish...">
+      </div>
+      <button class="btn btn-primary" onclick="findReplace()">Almashtir</button>
+    </div>
+    <div class="col">
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Base64 kodlash</h4>
+      <div class="form-group">
+        <input class="form-input" id="b64Input" placeholder="Matn yozing...">
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button class="btn btn-primary btn-sm" onclick="b64encode()">Kodla</button>
+        <button class="btn btn-secondary btn-sm" onclick="b64decode()">Dekodla</button>
+      </div>
+      <div class="result-box mono" id="b64Result" style="min-height:42px;font-size:0.8rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIT CONVERTER PANEL -->
+<div class="panel" id="panel-converter">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">⚖️ Birlik Konverteri</h2>
+  </div>
+  <div class="converter-tabs">
+    <button class="conv-tab active" onclick="setConvType('length', this)">📏 Uzunlik</button>
+    <button class="conv-tab" onclick="setConvType('weight', this)">⚖️ Og'irlik</button>
+    <button class="conv-tab" onclick="setConvType('temp', this)">🌡️ Harorat</button>
+    <button class="conv-tab" onclick="setConvType('area', this)">▭ Maydon</button>
+    <button class="conv-tab" onclick="setConvType('volume', this)">🧪 Hajm</button>
+    <button class="conv-tab" onclick="setConvType('speed', this)">🚀 Tezlik</button>
+    <button class="conv-tab" onclick="setConvType('time', this)">⏰ Vaqt</button>
+    <button class="conv-tab" onclick="setConvType('data', this)">💾 Ma'lumot</button>
+    <button class="conv-tab" onclick="setConvType('energy', this)">⚡ Energiya</button>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label class="form-label">Qiymat</label>
+      <input class="form-input" type="number" id="convInput" value="1" oninput="doConvert()">
+    </div>
+    <div class="col">
+      <label class="form-label">Dan</label>
+      <select class="form-select" id="convFrom" onchange="doConvert()"></select>
+    </div>
+    <div class="col">
+      <label class="form-label">Gacha</label>
+      <select class="form-select" id="convTo" onchange="doConvert()"></select>
+    </div>
+  </div>
+  <div class="result-box large" id="convResult" style="margin-top:1.5rem;">—</div>
+  <div id="convTable" style="margin-top:1.5rem;overflow-x:auto;"></div>
+</div>
+
+<!-- TIMER PANEL -->
+<div class="panel" id="panel-timer">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">⏱️ Taymer & Sekundomer</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;flex-wrap:wrap;">
+    <!-- COUNTDOWN -->
+    <div>
+      <h3 style="margin-bottom:1rem;color:var(--text2);">⏳ Hisob sanash</h3>
+      <div class="timer-display" id="countdownDisplay">00:00:00</div>
+      <div class="timer-presets">
+        <button class="preset-btn" onclick="setPreset(60)">1 min</button>
+        <button class="preset-btn" onclick="setPreset(300)">5 min</button>
+        <button class="preset-btn" onclick="setPreset(600)">10 min</button>
+        <button class="preset-btn" onclick="setPreset(900)">15 min</button>
+        <button class="preset-btn" onclick="setPreset(1800)">30 min</button>
+        <button class="preset-btn" onclick="setPreset(3600)">1 soat</button>
+      </div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="col"><label class="form-label">Soat</label><input class="form-input" type="number" id="cdHours" value="0" min="0" max="99"></div>
+        <div class="col"><label class="form-label">Daqiqa</label><input class="form-input" type="number" id="cdMinutes" value="5" min="0" max="59"></div>
+        <div class="col"><label class="form-label">Soniya</label><input class="form-input" type="number" id="cdSeconds" value="0" min="0" max="59"></div>
+      </div>
+      <div class="timer-controls">
+        <button class="btn btn-primary" id="cdStartBtn" onclick="startCountdown()">▶ Boshlash</button>
+        <button class="btn btn-secondary" onclick="pauseCountdown()">⏸ To'xtatish</button>
+        <button class="btn btn-danger" onclick="resetCountdown()">↺ Reset</button>
+      </div>
+    </div>
+    <!-- STOPWATCH -->
+    <div>
+      <h3 style="margin-bottom:1rem;color:var(--text2);">⏱ Sekundomer</h3>
+      <div class="timer-display" id="swDisplay" style="color:var(--accent3);">00:00.000</div>
+      <div class="timer-controls" style="margin-bottom:1rem;">
+        <button class="btn btn-success" id="swStartBtn" onclick="swToggle()">▶ Boshlash</button>
+        <button class="btn btn-secondary" onclick="swLap()">🏁 Lap</button>
+        <button class="btn btn-danger" onclick="swReset()">↺ Reset</button>
+      </div>
+      <div id="swLaps" style="max-height:200px;overflow-y:auto;">
+        <p style="color:var(--text3);font-size:0.85rem;text-align:center;">Lap yo'q</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD GENERATOR PANEL -->
+<div class="panel" id="panel-password">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🔐 Parol Yaratuvchi</h2>
+  </div>
+  <div style="max-width:600px;">
+    <div class="form-group">
+      <label class="form-label">Uzunlik: <strong id="pwLenVal" style="color:var(--accent);">16</strong></label>
+      <input type="range" id="pwLength" min="4" max="64" value="16" oninput="document.getElementById('pwLenVal').textContent=this.value;generatePassword()">
+    </div>
+    <div class="char-options">
+      <label class="checkbox-label"><input type="checkbox" id="pwUpper" checked onchange="generatePassword()"><span>A–Z (katta)</span></label>
+      <label class="checkbox-label"><input type="checkbox" id="pwLower" checked onchange="generatePassword()"><span>a–z (kichik)</span></label>
+      <label class="checkbox-label"><input type="checkbox" id="pwNumbers" checked onchange="generatePassword()"><span>0–9 (raqam)</span></label>
+      <label class="checkbox-label"><input type="checkbox" id="pwSymbols" checked onchange="generatePassword()"><span>!@#$% (belgi)</span></label>
+    </div>
+    <div style="position:relative;margin-bottom:0.5rem;">
+      <div class="result-box mono" id="pwResult" style="font-size:1.1rem;padding-right:80px;letter-spacing:2px;"></div>
+      <button class="copy-btn" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="copyText2('pwResult')">Nusxa</button>
+    </div>
+    <div class="strength-bar"><div class="strength-fill" id="pwStrengthBar"></div></div>
+    <div class="strength-text">Kuch: <strong id="pwStrengthText">—</strong></div>
+    <div style="display:flex;gap:8px;margin-top:1rem;">
+      <button class="btn btn-primary" onclick="generatePassword()">🔄 Yangilash</button>
+      <button class="btn btn-secondary" onclick="generateMultiple()">📋 10 ta yaratish</button>
+    </div>
+    <div id="multiplePasswords" style="margin-top:1rem;"></div>
+  </div>
+</div>
+
+<!-- BMI PANEL -->
+<div class="panel" id="panel-bmi">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">❤️ BMI Kalkulyator</h2>
+  </div>
+  <div style="max-width:500px;">
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;">
+      <label class="toggle">
+        <input type="radio" name="bmiUnit" value="metric" checked onchange="bmiUnitChange()"> Metrik (kg/sm)
+      </label>
+      <label class="toggle">
+        <input type="radio" name="bmiUnit" value="imperial" onchange="bmiUnitChange()"> Imperial (lb/fut)
+      </label>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label class="form-label" id="heightLabel">Bo'y (sm)</label>
+          <input class="form-input" type="number" id="bmiHeight" value="170" oninput="calcBMI()">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="form-label" id="weightLabel">Vazn (kg)</label>
+          <input class="form-input" type="number" id="bmiWeight" value="70" oninput="calcBMI()">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Yosh</label>
+      <input class="form-input" type="number" id="bmiAge" value="25" oninput="calcBMI()">
+    </div>
+    <div class="bmi-result">
+      <div class="bmi-num" id="bmiNum" style="color:var(--accent);">—</div>
+      <div class="bmi-cat" id="bmiCat">—</div>
+    </div>
+    <div class="bmi-meter">
+      <div class="bmi-needle" id="bmiNeedle" style="left:50%"></div>
+    </div>
+    <div class="bmi-labels">
+      <span>Kam (18.5)</span>
+      <span>Normal (25)</span>
+      <span>Ortiqcha (30)</span>
+      <span>Semiz</span>
+    </div>
+    <div class="alert alert-info" id="bmiAdvice" style="margin-top:1.5rem;">BMI ni hisoblash uchun ma'lumotlarni kiriting.</div>
+    <div class="divider"></div>
+    <h4 style="margin-bottom:1rem;">Ideal Vazn Diapazoni</h4>
+    <div id="idealWeight"></div>
+  </div>
+</div>
+
+<!-- COLOR TOOLS PANEL -->
+<div class="panel" id="panel-color">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🎨 Rang Vositalari</h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Rang tanlang</label>
+        <input type="color" id="colorPicker" value="#6c63ff" oninput="updateColor(this.value)" style="width:100%;height:60px;border-radius:var(--radius);cursor:pointer;border:1px solid var(--border);background:none;">
+      </div>
+      <div class="color-preview" id="colorPreview" style="background:#6c63ff;color:white;">#6C63FF</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div>
+          <label class="form-label">HEX</label>
+          <input class="form-input" id="hexInput" value="#6c63ff" oninput="colorFromHex(this.value)">
+        </div>
+        <div>
+          <label class="form-label">RGB</label>
+          <input class="form-input" id="rgbInput" value="108, 99, 255" oninput="colorFromRgb(this.value)">
+        </div>
+        <div>
+          <label class="form-label">HSL</label>
+          <input class="form-input" id="hslInput" value="244°, 100%, 69%">
+        </div>
+        <div>
+          <label class="form-label">CMYK</label>
+          <input class="form-input" id="cmykInput" value="58%, 61%, 0%, 0%">
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Rang palitrasi</h4>
+      <div class="color-palette" id="colorPalette"></div>
+      <div class="divider"></div>
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Ohanglar (Tints & Shades)</h4>
+      <div id="colorTints" style="display:flex;gap:4px;margin-bottom:8px;"></div>
+      <div id="colorShades" style="display:flex;gap:4px;"></div>
+      <div class="divider"></div>
+      <h4 style="margin-bottom:1rem;color:var(--text2);">To'ldiruvchi ranglar</h4>
+      <div id="colorComplementary" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- QR CODE PANEL -->
+<div class="panel" id="panel-qrcode">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">📱 QR Kod Yaratuvchi</h2>
+  </div>
+  <div class="row">
+    <div class="col-2">
+      <div class="form-group">
+        <label class="form-label">Tur</label>
+        <select class="form-select" id="qrType" onchange="qrTypeChange()">
+          <option value="text">📝 Matn</option>
+          <option value="url">🔗 URL / Havola</option>
+          <option value="email">📧 Email</option>
+          <option value="phone">📞 Telefon</option>
+          <option value="sms">💬 SMS</option>
+          <option value="wifi">📶 WiFi</option>
+          <option value="vcard">👤 Vizit karta (vCard)</option>
+        </select>
+      </div>
+      <div id="qrInputs">
+        <div class="form-group">
+          <label class="form-label">Matn</label>
+          <textarea class="form-textarea" id="qrText" placeholder="QR kod uchun matn yozing..." rows="4">UzTools.uz — Hamma uchun bepul onlayn vositalar!</textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Hajm: <strong id="qrSizeVal" style="color:var(--accent);">200</strong>px</label>
+          <input type="range" id="qrSize" min="100" max="500" value="200" oninput="document.getElementById('qrSizeVal').textContent=this.value;generateQR()">
+        </div>
+        <div class="col">
+          <label class="form-label">Xato to'g'rilash</label>
+          <select class="form-select" id="qrEcc" onchange="generateQR()">
+            <option value="L">L — Kam (7%)</option>
+            <option value="M" selected>M — O'rta (15%)</option>
+            <option value="Q">Q — Kvart (25%)</option>
+            <option value="H">H — Yuqori (30%)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="generateQR()" style="margin-top:1rem;">📱 QR Kod Yaratish</button>
+    </div>
+    <div class="col" style="text-align:center;">
+      <div class="qr-container">
+        <canvas id="qrCanvas" width="200" height="200"></canvas>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:1rem;">
+        <button class="btn btn-primary" onclick="downloadQR()">⬇️ Yuklab olish</button>
+        <button class="btn btn-secondary" onclick="copyQR()">📋 Nusxa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES PANEL -->
+<div class="panel" id="panel-notes">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🗒️ Eslatmalar</h2>
+  </div>
+  <div class="row">
+    <div class="col" style="max-width:280px;">
+      <div style="display:flex;gap:8px;margin-bottom:1rem;">
+        <button class="btn btn-primary btn-sm" onclick="newNote()" style="flex:1;">+ Yangi</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteNote()">🗑️</button>
+      </div>
+      <div class="notes-sidebar" id="notesList"></div>
+    </div>
+    <div class="col-2">
+      <div class="form-group">
+        <input class="form-input" id="noteTitle" placeholder="Eslatma sarlavhasi..." style="font-size:1.1rem;font-weight:600;">
+      </div>
+      <div class="form-group">
+        <textarea class="form-textarea" id="noteContent" placeholder="Eslatma mazmuni..." style="min-height:320px;" oninput="autoSaveNote()"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-primary btn-sm" onclick="saveNote()">💾 Saqlash</button>
+        <span style="color:var(--text3);font-size:0.8rem;" id="noteSaveStatus"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CURRENCY PANEL -->
+<div class="panel" id="panel-currency">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">💱 Valyuta Konverteri</h2>
+  </div>
+  <div class="alert alert-info" style="margin-bottom:1.5rem;">ℹ️ Kurslar taxminiy (2024-yil o'rtacha). Real kurslar uchun rasmiy manbalarga murojaat qiling.</div>
+  <div class="row">
+    <div class="col">
+      <label class="form-label">Miqdor</label>
+      <input class="form-input" type="number" id="currAmount" value="1" oninput="convertCurrency()">
+    </div>
+    <div class="col">
+      <label class="form-label">Dan</label>
+      <select class="form-select" id="currFrom" onchange="convertCurrency()"></select>
+    </div>
+    <div class="col">
+      <label class="form-label">Gacha</label>
+      <select class="form-select" id="currTo" onchange="convertCurrency()"></select>
+    </div>
+  </div>
+  <div class="result-box large" id="currResult" style="margin:1.5rem 0;">—</div>
+  <h4 style="margin-bottom:1rem;color:var(--text2);">Asosiy valyutalar kurslari (1 UZS ga nisbatan)</h4>
+  <div class="currency-grid" id="currencyGrid"></div>
+</div>
+
+<!-- HASH PANEL -->
+<div class="panel" id="panel-hash">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🔒 Hash Yaratuvchi</h2>
+  </div>
+  <div class="alert alert-warning">⚠️ Hash bir tomonlama — original matnni tiklash mumkin emas. Parollarni saqlash uchun ishlatiladi.</div>
+  <div class="form-group" style="margin-top:1rem;">
+    <label class="form-label">Matn kiriting</label>
+    <textarea class="form-textarea" id="hashInput" placeholder="Hash qilish uchun matn yozing..." rows="4"></textarea>
+  </div>
+  <div class="hash-method">
+    <button class="method-btn active" onclick="setHashMethod('md5', this)">MD5</button>
+    <button class="method-btn" onclick="setHashMethod('sha1', this)">SHA-1</button>
+    <button class="method-btn" onclick="setHashMethod('sha256', this)">SHA-256</button>
+    <button class="method-btn" onclick="setHashMethod('sha512', this)">SHA-512</button>
+  </div>
+  <button class="btn btn-primary" onclick="generateHash()" style="margin-bottom:1rem;">🔒 Hash Yaratish</button>
+  <label class="form-label">Natija:</label>
+  <div class="result-box mono" id="hashResult" style="word-break:break-all;">—</div>
+  <button class="btn btn-secondary btn-sm" onclick="copyText2('hashResult')" style="margin-top:8px;">📋 Nusxa</button>
+</div>
+
+<!-- AGE CALC PANEL -->
+<div class="panel" id="panel-agecalc">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🎂 Yosh Kalkulyatori</h2>
+  </div>
+  <div style="max-width:500px;">
+    <div class="form-group">
+      <label class="form-label">Tug'ilgan sana</label>
+      <input class="form-input" type="date" id="birthDate" oninput="calcAge()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sana bilan solishtirish (ixtiyoriy)</label>
+      <input class="form-input" type="date" id="compareDate" oninput="calcAge()">
+    </div>
+    <button class="btn btn-primary" onclick="calcAge()">🎂 Yoshni hisoblash</button>
+    <div id="ageResult" style="margin-top:1.5rem;"></div>
+  </div>
+</div>
+
+<!-- LOAN CALC PANEL -->
+<div class="panel" id="panel-loan">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">💰 Kredit Kalkulyatori</h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <label class="form-label">Kredit miqdori (so'm)</label>
+        <input class="form-input" type="number" id="loanAmount" value="10000000" oninput="calcLoan()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yillik foiz (%)</label>
+        <input class="form-input" type="number" id="loanRate" value="18" step="0.1" oninput="calcLoan()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Muddat (oy)</label>
+        <input class="form-input" type="number" id="loanTerm" value="24" oninput="calcLoan()">
+      </div>
+      <button class="btn btn-primary" onclick="calcLoan()">💰 Hisoblash</button>
+    </div>
+    <div class="col">
+      <div id="loanResult"></div>
+    </div>
+  </div>
+  <div id="loanSchedule" style="margin-top:2rem;overflow-x:auto;"></div>
+</div>
+
+<!-- RANDOM PANEL -->
+<div class="panel" id="panel-random">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">🎲 Tasodifiy Generatorlar</h2>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🔢 Tasodifiy son</h3>
+      <div class="row">
+        <div class="col"><label class="form-label">Min</label><input class="form-input" type="number" id="randMin" value="1"></div>
+        <div class="col"><label class="form-label">Max</label><input class="form-input" type="number" id="randMax" value="100"></div>
+      </div>
+      <button class="btn btn-primary" onclick="genRandNum()" style="margin:0.5rem 0;">Yaratish</button>
+      <div class="result-box large" id="randNumResult">—</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🎰 Ro'yxatdan tanlash</h3>
+      <div class="form-group">
+        <label class="form-label">Ro'yxat (har bir qator = 1 element)</label>
+        <textarea class="form-textarea" id="randListInput" rows="4" placeholder="Apples&#10;Bananas&#10;Cherries&#10;Dates">Olma
+Banan
+Gilos
+Uzum
+Nok</textarea>
+      </div>
+      <button class="btn btn-primary" onclick="genRandPick()">🎲 Tanlash</button>
+      <div class="result-box large" id="randPickResult" style="margin-top:0.5rem;font-size:1.8rem;">—</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🎴 UUID Yaratuvchi</h3>
+      <button class="btn btn-primary" onclick="genUUID()">UUID Yaratish</button>
+      <div class="result-box mono" id="uuidResult" style="margin-top:0.5rem;">—</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🎯 Zar tashlash</h3>
+      <div class="form-group">
+        <label class="form-label">Zarlar soni: <strong id="diceCountVal">2</strong></label>
+        <input type="range" min="1" max="10" value="2" oninput="document.getElementById('diceCountVal').textContent=this.value;" id="diceCount">
+      </div>
+      <button class="btn btn-primary" onclick="rollDice()">🎲 Tashla</button>
+      <div id="diceResult" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;justify-content:center;"></div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🪙 Tanga tashlash</h3>
+      <button class="btn btn-primary" onclick="flipCoin()" style="margin-bottom:1rem;">🪙 Tashla</button>
+      <div class="result-box large" id="coinResult" style="font-size:3rem;">—</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">🔀 Ro'yxatni aralashtirish</h3>
+      <textarea class="form-textarea" id="shuffleInput" rows="4" placeholder="Har qatorda bir element yozing...">Birinchi
+Ikkinchi
+Uchinchi
+To'rtinchi
+Beshinchi</textarea>
+      <button class="btn btn-primary" onclick="shuffleList()" style="margin:0.5rem 0;">Aralashtir</button>
+      <div class="result-box mono" id="shuffleResult" style="min-height:80px;font-size:0.85rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERCENTAGE PANEL -->
+<div class="panel" id="panel-percent">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">📊 Foiz Kalkulyatori</h2>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">X ning Y foizi</h3>
+      <div class="form-group"><label class="form-label">Qiymat (X)</label><input class="form-input" type="number" id="p1x" value="200" oninput="calcP1()"></div>
+      <div class="form-group"><label class="form-label">Foiz (Y%)</label><input class="form-input" type="number" id="p1y" value="15" oninput="calcP1()"></div>
+      <div class="result-box" id="p1result">200 ning 15% = <strong>30</strong></div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">X, Y ning necha foizi?</h3>
+      <div class="form-group"><label class="form-label">Qism (X)</label><input class="form-input" type="number" id="p2x" value="30" oninput="calcP2()"></div>
+      <div class="form-group"><label class="form-label">To'liq (Y)</label><input class="form-input" type="number" id="p2y" value="200" oninput="calcP2()"></div>
+      <div class="result-box" id="p2result">30, 200 ning <strong>15%</strong>ini tashkil qiladi</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">Foiz o'zgarishi</h3>
+      <div class="form-group"><label class="form-label">Eski qiymat</label><input class="form-input" type="number" id="p3old" value="100" oninput="calcP3()"></div>
+      <div class="form-group"><label class="form-label">Yangi qiymat</label><input class="form-input" type="number" id="p3new" value="130" oninput="calcP3()"></div>
+      <div class="result-box" id="p3result">+<strong>30%</strong> oshgan</div>
+    </div>
+    <div class="tool-card">
+      <h3 style="margin-bottom:1rem;">Chegirma kalkulyatori</h3>
+      <div class="form-group"><label class="form-label">Asl narx</label><input class="form-input" type="number" id="p4price" value="500000" oninput="calcP4()"></div>
+      <div class="form-group"><label class="form-label">Chegirma (%)</label><input class="form-input" type="number" id="p4disc" value="20" oninput="calcP4()"></div>
+      <div class="result-box" id="p4result">400,000 so'm — Chegirma: <strong>100,000</strong> so'm</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORD COUNTER PANEL -->
+<div class="panel" id="panel-wordcounter">
+  <div class="panel-header">
+    <button class="back-btn" onclick="showHome()">← Orqaga</button>
+    <h2 class="panel-title">📖 Matn Tahlilchisi</h2>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Matn kiriting</label>
+    <textarea class="form-textarea" id="wcText" rows="10" placeholder="Tahlil qilish uchun matn yozing..." oninput="analyzeText()" style="min-height:250px;"></textarea>
+  </div>
+  <div id="wcStats" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;"></div>
+  <div class="row">
+    <div class="col">
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Eng ko'p ishlatiladigan so'zlar</h4>
+      <div id="wcTopWords"></div>
+    </div>
+    <div class="col">
+      <h4 style="margin-bottom:1rem;color:var(--text2);">Harflar taqsimoti</h4>
+      <div id="wcLetterDist" style="max-height:250px;overflow-y:auto;"></div>
+    </div>
+  </div>
+</div>
+
+</div> <!-- container end -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">UzTools</div>
+  <p class="footer-desc">Hamma uchun bepul, reklamasiz onlayn vositalar to'plami. O'zbekiston uchun yaratilgan.</p>
+  <div class="footer-links">
+    <a onclick="openTool('calculator')">🧮 Kalkulyator</a>
+    <a onclick="openTool('converter')">⚖️ Konverter</a>
+    <a onclick="openTool('timer')">⏱️ Taymer</a>
+    <a onclick="openTool('password')">🔐 Parol</a>
+    <a onclick="openTool('qrcode')">📱 QR Kod</a>
+    <a onclick="openTool('bmi')">❤️ BMI</a>
+    <a onclick="openTool('color')">🎨 Rang</a>
+    <a onclick="openTool('notes')">🗒️ Eslatma</a>
+    <a onclick="openTool('currency')">💱 Valyuta</a>
+    <a onclick="openTool('random')">🎲 Tasodifiy</a>
+  </div>
+  <div class="footer-bottom">© 2024 UzTools — Barcha huquqlar himoyalangan. Bepul va ochiq manba.</div>
+</footer>
+
+<!-- === ALL JAVASCRIPT === -->
+<script>
+// =============================================
+// TOOLS DATA
+// =============================================
+const TOOLS = [
+  { id:'calculator', name:'Kalkulyator', desc:'Oddiy va ilmiy kalkulyator. Sin, cos, log, sqrt va boshqa funksiyalar.', icon:'🧮', color:'purple', cat:'math', badge:'Ilmiy' },
+  { id:'converter', name:'Birlik Konverteri', desc:'Uzunlik, og\'irlik, harorat, maydon, hajm, tezlik va boshqalar.', icon:'⚖️', color:'cyan', cat:'convert', badge:'9 tur' },
+  { id:'texttools', name:'Matn Vositalari', desc:'Katta/kichik harf, qidirish, Base64 va boshqa matn amaliyotlari.', icon:'📝', color:'green', cat:'text', badge:'20+ amal' },
+  { id:'timer', name:'Taymer & Sekundomer', desc:'Hisob sanash (countdown) va aniq sekund o\'lchash vositasi.', icon:'⏱️', color:'orange', cat:'time', badge:'Lap' },
+  { id:'password', name:'Parol Yaratuvchi', desc:'Xavfsiz va kuchli parollar yarating. Kuch ko\'rsatkichi bilan.', icon:'🔐', color:'pink', cat:'security', badge:'Kuchli' },
+  { id:'bmi', name:'BMI Kalkulyator', desc:'Tana massa indeksini hisoblang. Sog\'lom vazn maslahatlar bilan.', icon:'❤️', color:'pink', cat:'health', badge:'Sogʻliq' },
+  { id:'color', name:'Rang Vositalari', desc:'HEX, RGB, HSL, CMYK konvertatsiya. Palitralar va ohanglar.', icon:'🎨', color:'teal', cat:'color', badge:'HEX/RGB' },
+  { id:'qrcode', name:'QR Kod Yaratuvchi', desc:'URL, matn, email, telefon, WiFi va vCard uchun QR kodlar.', icon:'📱', color:'purple', cat:'other', badge:'7 tur' },
+  { id:'notes', name:'Eslatmalar', desc:'Tezkor eslatmalar yozing. Brauzerta saqlanadi.', icon:'🗒️', color:'cyan', cat:'other', badge:'Offline' },
+  { id:'currency', name:'Valyuta Konverteri', desc:'USD, EUR, RUB, UZS va boshqa valyutalar kurslari.', icon:'💱', color:'green', cat:'convert', badge:'20+ valyuta' },
+  { id:'hash', name:'Hash Yaratuvchi', desc:'MD5, SHA-1, SHA-256, SHA-512 hash yaratish vositasi.', icon:'🔒', color:'pink', cat:'security', badge:'Xavfsiz' },
+  { id:'agecalc', name:'Yosh Kalkulyatori', desc:'Tug\'ilgan sanangizdan aniq yoshingizni hisoblang.', icon:'🎂', color:'orange', cat:'math', badge:'Aniq' },
+  { id:'loan', name:'Kredit Kalkulyatori', desc:'Oylik to\'lov, umumiy foiz va to\'lov jadvali.', icon:'💰', color:'green', cat:'math', badge:'Jadval' },
+  { id:'random', name:'Tasodifiy Generator', desc:'Son, UUID, zar, tanga va ro\'yxatdan tanlash.', icon:'🎲', color:'purple', cat:'other', badge:'6 tur' },
+  { id:'percent', name:'Foiz Kalkulyatori', desc:'Foiz hisoblash, chegirma, foiz o\'zgarishi va boshqalar.', icon:'📊', color:'cyan', cat:'math', badge:'4 tur' },
+  { id:'wordcounter', name:'Matn Tahlilchisi', desc:'So\'z, belgi, qator soni. Top so\'zlar va harflar taqsimoti.', icon:'📖', color:'teal', cat:'text', badge:'Chuqur' },
+];
+
+// =============================================
+// INIT
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderTools(TOOLS);
+  document.getElementById('toolCount').textContent = TOOLS.length + '+';
+  startClock();
+  initNotes();
+  initColorPicker();
+  generatePassword();
+  calcBMI();
+  initCurrencySelects();
+  convertCurrency();
+  initConverter();
+  calcP1(); calcP2(); calcP3(); calcP4();
+  
+  // Set today's date for age calc
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('compareDate').value = today;
+  document.getElementById('birthDate').value = '1995-06-15';
+  calcAge();
+  calcLoan();
+  analyzeText();
+  renderCurrencyGrid();
+});
+
+// =============================================
+// CLOCK
+// =============================================
+function startClock() {
+  function tick() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clockDisplay').textContent = h+':'+m+':'+s;
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+// =============================================
+// TOOLS GRID
+// =============================================
+function renderTools(tools) {
+  const grid = document.getElementById('toolsGrid');
+  grid.innerHTML = tools.map(t => `
+    <div class="tool-card fade-in" onclick="openTool('${t.id}')" data-cat="${t.cat}">
+      <div class="tool-card-header">
+        <div class="tool-icon ${t.color}">${t.icon}</div>
+        <div>
+          <div class="tool-name">${t.name}</div>
+          <div class="tool-desc">${t.desc}</div>
+          <span class="tool-badge free">${t.badge}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat === 'all' ? TOOLS : TOOLS.filter(t => t.cat === cat);
+  renderTools(filtered);
+}
+
+function searchTools(q) {
+  if (!q.trim()) { renderTools(TOOLS); return; }
+  const lq = q.toLowerCase();
+  const filtered = TOOLS.filter(t => t.name.toLowerCase().includes(lq) || t.desc.toLowerCase().includes(lq));
+  renderTools(filtered);
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+function showHome() {
+  document.getElementById('page-home').style.display = '';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('nav-home').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function openTool(id) {
+  document.getElementById('page-home').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-'+id);
+  if (panel) {
+    panel.classList.add('active');
+    panel.classList.add('fade-in');
+  }
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  window.scrollTo(0,0);
+  // Init tool-specific things
+  if (id === 'qrcode') setTimeout(generateQR, 100);
+  if (id === 'color') setTimeout(updateColor, 100);
+}
+
+// =============================================
+// CALCULATOR
+// =============================================
+let cNum = '0', cExpr = '', cOp = '', cPrev = 0, cNewNum = false;
+
+function calcDisplay() {
+  let n = parseFloat(cNum);
+  let disp = isNaN(n) ? 'Xato' : (String(n).length > 12 ? n.toExponential(4) : String(n));
+  document.getElementById('calcNum').textContent = disp;
+  document.getElementById('calcExpr').textContent = cExpr;
+}
+
+function calcNum(n) {
+  if (cNewNum) { cNum = n; cNewNum = false; }
+  else { cNum = cNum === '0' ? n : cNum + n; }
+  calcDisplay();
+}
+
+function calcDot() {
+  if (cNewNum) { cNum = '0.'; cNewNum = false; return calcDisplay(); }
+  if (!cNum.includes('.')) cNum += '.';
+  calcDisplay();
+}
+
+function calcOp(op) {
+  const n = parseFloat(cNum);
+  if (cOp && !cNewNum) {
+    const res = doOp(cPrev, n, cOp);
+    cNum = String(res); cPrev = res;
+  } else { cPrev = n; }
+  cOp = op; cNewNum = true;
+  const opDisplay = {'+':'+','-':'−','*':'×','/':'÷'}[op];
+  cExpr = cNum + ' ' + opDisplay;
+  calcDisplay();
+}
+
+function doOp(a, b, op) {
+  if (op === '+') return a + b;
+  if (op === '-') return a - b;
+  if (op === '*') return a * b;
+  if (op === '/') return b === 0 ? NaN : a / b;
+  return b;
+}
+
+function calcEquals() {
+  if (!cOp) return;
+  const n = parseFloat(cNum);
+  const res = doOp(cPrev, n, cOp);
+  const opDisplay = {'+':'+','-':'−','*':'×','/':'÷'}[cOp];
+  addCalcHistory(cPrev + ' ' + opDisplay + ' ' + n + ' = ' + res);
+  cExpr = ''; cOp = ''; cNewNum = true;
+  cNum = String(isNaN(res) ? 'Xato' : (isFinite(res) ? +res.toFixed(10) : 'Xato'));
+  calcDisplay();
+}
+
+function calcClear() { cNum='0'; cExpr=''; cOp=''; cPrev=0; cNewNum=false; calcDisplay(); }
+function calcSign() { cNum = String(-parseFloat(cNum)); calcDisplay(); }
+function calcPercent() { cNum = String(parseFloat(cNum)/100); calcDisplay(); }
+
+function calcSci(fn) {
+  let n = parseFloat(cNum);
+  let res;
+  if (fn==='sqrt') res = Math.sqrt(n);
+  else if (fn==='square') res = n*n;
+  else if (fn==='cube') res = n*n*n;
+  else if (fn==='sin') res = Math.sin(n*Math.PI/180);
+  else if (fn==='cos') res = Math.cos(n*Math.PI/180);
+  else if (fn==='tan') res = Math.tan(n*Math.PI/180);
+  else if (fn==='log') res = Math.log10(n);
+  else if (fn==='ln') res = Math.log(n);
+  else if (fn==='inv') res = 1/n;
+  else if (fn==='pi') { cNum = String(Math.PI); return calcDisplay(); }
+  else if (fn==='e') { cNum = String(Math.E); return calcDisplay(); }
+  else if (fn==='abs') res = Math.abs(n);
+  addCalcHistory(fn + '(' + n + ') = ' + (isNaN(res)?'Xato':+res.toFixed(8)));
+  cNum = String(isNaN(res)||!isFinite(res) ? 0 : +res.toFixed(8));
+  cNewNum = true; calcDisplay();
+}
+
+function addCalcHistory(text) {
+  const h = document.getElementById('calcHistory');
+  if (h.querySelector('p')) h.innerHTML = '';
+  const item = document.createElement('div');
+  item.style.cssText = 'padding:8px 12px;background:var(--bg4);border-radius:8px;margin-bottom:6px;font-family:JetBrains Mono,monospace;font-size:0.82rem;color:var(--text2);';
+  item.textContent = text;
+  h.prepend(item);
+}
+
+// =============================================
+// TEXT TOOLS
+// =============================================
+function updateTextStats() {
+  const t = document.getElementById('textInput').value;
+  document.getElementById('tCharCount').textContent = t.length;
+  document.getElementById('tWordCount').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('tLineCount').textContent = t ? t.split('\n').length : 0;
+  document.getElementById('tSentCount').textContent = (t.match(/[.!?]+/g)||[]).length;
+  document.getElementById('tReadTime').textContent = Math.max(1, Math.ceil(t.trim().split(/\s+/).filter(Boolean).length/200));
+}
+
+function textTransform(type) {
+  const el = document.getElementById('textInput');
+  let t = el.value;
+  if (type==='upper') el.value = t.toUpperCase();
+  else if (type==='lower') el.value = t.toLowerCase();
+  else if (type==='title') el.value = t.replace(/\b\w/g, c => c.toUpperCase());
+  else if (type==='sentence') el.value = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+  else if (type==='reverse') el.value = t.split('').reverse().join('');
+  else if (type==='trim') el.value = t.split('\n').map(l=>l.trim()).join('\n').replace(/\n{3,}/g,'\n\n');
+  else if (type==='removeDup') el.value = [...new Set(t.split('\n'))].join('\n');
+  else if (type==='sort') el.value = t.split('\n').sort().join('\n');
+  else if (type==='shuffleLines') { let lines=t.split('\n'); for(let i=lines.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[lines[i],lines[j]]=[lines[j],lines[i]];} el.value=lines.join('\n'); }
+  updateTextStats();
+}
+
+function findReplace() {
+  const el = document.getElementById('textInput');
+  const f = document.getElementById('findText').value;
+  const r = document.getElementById('replaceText').value;
+  if (!f) return;
+  el.value = el.value.split(f).join(r);
+  updateTextStats();
+}
+
+function b64encode() {
+  const v = document.getElementById('b64Input').value;
+  try { document.getElementById('b64Result').textContent = btoa(unescape(encodeURIComponent(v))); }
+  catch(e) { document.getElementById('b64Result').textContent = 'Xato: ' + e.message; }
+}
+function b64decode() {
+  const v = document.getElementById('b64Input').value;
+  try { document.getElementById('b64Result').textContent = decodeURIComponent(escape(atob(v))); }
+  catch(e) { document.getElementById('b64Result').textContent = 'Xato: Noto\'g\'ri Base64'; }
+}
+
+function copyText(id) {
+  navigator.clipboard.writeText(document.getElementById(id).value).then(()=>showCopied());
+}
+function copyText2(id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>showCopied());
+}
+function clearText() { document.getElementById('textInput').value=''; updateTextStats(); }
+function showCopied() {
+  const d = document.createElement('div');
+  d.style.cssText='position:fixed;top:80px;right:20px;background:var(--success);color:#000;padding:8px 16px;border-radius:8px;z-index:9999;font-size:0.85rem;font-weight:600;';
+  d.textContent='✓ Nusxalandi!';
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 2000);
+}
+
+// =============================================
+// UNIT CONVERTER
+// =============================================
+const CONV_DATA = {
+  length: {
+    units: ['Metr','Santimetr','Millimetr','Kilometr','Dyuym','Fut','Yard','Mil','Dengiz mili'],
+    factors: [1, 0.01, 0.001, 1000, 0.0254, 0.3048, 0.9144, 1609.344, 1852]
+  },
+  weight: {
+    units: ['Kilogramm','Gramm','Milligramm','Tonna','Funt','Untsiya','Karat'],
+    factors: [1, 0.001, 0.000001, 1000, 0.453592, 0.0283495, 0.0002]
+  },
+  temp: {
+    units: ['Selsiy (°C)','Farengeyt (°F)','Kelvin (K)'],
+    factors: null
+  },
+  area: {
+    units: ['Kv.metr','Kv.km','Kv.sm','Gektar','Ar','Kv.dyuym','Kv.fut','Kv.yard','Kv.mil'],
+    factors: [1, 1e6, 0.0001, 10000, 100, 0.00064516, 0.092903, 0.836127, 2589988]
+  },
+  volume: {
+    units: ['Litr','Millilitr','Kub metr','Gallon(US)','Pinta(US)','Flinjos(US)','Kub dyuym','Kub fut'],
+    factors: [1, 0.001, 1000, 3.78541, 0.473176, 0.0295735, 0.0163871, 28.3168]
+  },
+  speed: {
+    units: ['m/s','km/soat','Mil/soat','Tugun','ft/s'],
+    factors: [1, 0.277778, 0.44704, 0.514444, 0.3048]
+  },
+  time: {
+    units: ['Soniya','Daqiqa','Soat','Kun','Hafta','Oy (30 kun)','Yil (365 kun)'],
+    factors: [1, 60, 3600, 86400, 604800, 2592000, 31536000]
+  },
+  data: {
+    units: ['Bit','Bayt','Kilobayt','Megabayt','Gigabayt','Terabayt','Petabayt'],
+    factors: [1, 8, 8192, 8388608, 8589934592, 8796093022208, 9007199254740992]
+  },
+  energy: {
+    units: ['Joule','Kilojoule','Kalori','Kkal','kWh','eV','BTU'],
+    factors: [1, 1000, 4.184, 4184, 3600000, 1.602e-19, 1055.06]
+  }
+};
+
+let currentConvType = 'length';
+
+function setConvType(type, btn) {
+  currentConvType = type;
+  document.querySelectorAll('.conv-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  initConverter();
+}
+
+function initConverter() {
+  const data = CONV_DATA[currentConvType];
+  const from = document.getElementById('convFrom');
+  const to = document.getElementById('convTo');
+  from.innerHTML = data.units.map((u,i)=>`<option value="${i}">${u}</option>`).join('');
+  to.innerHTML = data.units.map((u,i)=>`<option value="${i}" ${i===1?'selected':''}>${u}</option>`).join('');
+  doConvert();
+}
+
+function doConvert() {
+  const type = currentConvType;
+  const data = CONV_DATA[type];
+  const val = parseFloat(document.getElementById('convInput').value) || 0;
+  const fi = parseInt(document.getElementById('convFrom').value);
+  const ti = parseInt(document.getElementById('convTo').value);
+  let result;
+
+  if (type === 'temp') {
+    result = convertTemp(val, fi, ti);
+  } else {
+    const inMeters = val * data.factors[fi];
+    result = inMeters / data.factors[ti];
+  }
+
+  const rounded = Math.abs(result) < 0.001 ? result.toExponential(4) : parseFloat(result.toFixed(6)).toLocaleString('uz-UZ');
+  const fromUnit = data.units[fi];
+  const toUnit = data.units[ti];
+  document.getElementById('convResult').innerHTML = `${parseFloat(val.toFixed(6)).toLocaleString()} ${fromUnit} = <span style="color:var(--accent5)">${rounded}</span> ${toUnit}`;
+  
+  // Conversion table
+  const vals = [0.001,0.01,0.1,1,5,10,50,100,500,1000];
+  let tableHTML = '<table><tr><th>'+fromUnit+'</th><th>'+toUnit+'</th></tr>';
+  vals.forEach(v => {
+    let r;
+    if (type==='temp') r = convertTemp(v, fi, ti);
+    else r = (v * data.factors[fi]) / data.factors[ti];
+    const rd = Math.abs(r) < 0.001 ? r.toExponential(3) : parseFloat(r.toFixed(4));
+    tableHTML += `<tr><td>${v}</td><td>${rd}</td></tr>`;
+  });
+  tableHTML += '</table>';
+  document.getElementById('convTable').innerHTML = tableHTML;
+}
+
+function convertTemp(val, from, to) {
+  let celsius;
+  if (from===0) celsius = val;
+  else if (from===1) celsius = (val-32)*5/9;
+  else celsius = val - 273.15;
+  if (to===0) return celsius;
+  if (to===1) return celsius*9/5+32;
+  return celsius + 273.15;
+}
+
+// =============================================
+// TIMER & STOPWATCH
+// =============================================
+let cdInterval, cdRunning=false, cdRemaining=0;
+let swInterval, swRunning=false, swElapsed=0, swStart=0, swLapCount=0;
+
+function setPreset(secs) { document.getElementById('cdHours').value=Math.floor(secs/3600); document.getElementById('cdMinutes').value=Math.floor((secs%3600)/60); document.getElementById('cdSeconds').value=secs%60; }
+
+function startCountdown() {
+  if (cdRunning) return;
+  const h=parseInt(document.getElementById('cdHours').value)||0;
+  const m=parseInt(document.getElementById('cdMinutes').value)||0;
+  const s=parseInt(document.getElementById('cdSeconds').value)||0;
+  cdRemaining = h*3600+m*60+s;
+  if (cdRemaining<=0) return;
+  cdRunning=true;
+  cdInterval=setInterval(()=>{
+    cdRemaining--;
+    updateCDDisplay();
+    if (cdRemaining<=0) {
+      clearInterval(cdInterval); cdRunning=false;
+      document.getElementById('countdownDisplay').style.color='var(--danger)';
+      playBeep();
+      setTimeout(()=>document.getElementById('countdownDisplay').style.color='var(--accent)',3000);
+    }
+  },1000);
+}
+
+function pauseCountdown() { clearInterval(cdInterval); cdRunning=false; }
+function resetCountdown() { clearInterval(cdInterval); cdRunning=false; cdRemaining=0; document.getElementById('countdownDisplay').textContent='00:00:00'; document.getElementById('countdownDisplay').style.color='var(--accent)'; }
+
+function updateCDDisplay() {
+  const h=Math.floor(cdRemaining/3600);
+  const m=Math.floor((cdRemaining%3600)/60);
+  const s=cdRemaining%60;
+  document.getElementById('countdownDisplay').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 800; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 1);
+  } catch(e){}
+}
+
+function swToggle() {
+  if (swRunning) {
+    clearInterval(swInterval); swRunning=false;
+    document.getElementById('swStartBtn').textContent='▶ Davom';
+  } else {
+    swStart = Date.now() - swElapsed; swRunning=true;
+    document.getElementById('swStartBtn').textContent='⏸ To\'xtat';
+    swInterval = setInterval(()=>{
+      swElapsed = Date.now()-swStart;
+      const ms = swElapsed%1000;
+      const s = Math.floor(swElapsed/1000)%60;
+      const m = Math.floor(swElapsed/60000);
+      document.getElementById('swDisplay').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(ms).padStart(3,'0');
+    },10);
+  }
+}
+
+function swLap() {
+  if (!swRunning) return;
+  swLapCount++;
+  const laps = document.getElementById('swLaps');
+  if (laps.querySelector('p')) laps.innerHTML='';
+  const ms=swElapsed%1000, s=Math.floor(swElapsed/1000)%60, m=Math.floor(swElapsed/60000);
+  const item = document.createElement('div');
+  item.style.cssText='display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg4);border-radius:6px;margin-bottom:4px;font-size:0.82rem;';
+  item.innerHTML=`<span style="color:var(--text3)">Lap ${swLapCount}</span><span style="font-family:JetBrains Mono,monospace;color:var(--accent3)">${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(3,'0')}</span>`;
+  laps.prepend(item);
+}
+
+function swReset() { clearInterval(swInterval); swRunning=false; swElapsed=0; swLapCount=0; document.getElementById('swDisplay').textContent='00:00.000'; document.getElementById('swStartBtn').textContent='▶ Boshlash'; document.getElementById('swLaps').innerHTML='<p style="color:var(--text3);font-size:0.85rem;text-align:center;">Lap yo\'q</p>'; }
+
+// =============================================
+// PASSWORD GENERATOR
+// =============================================
+function generatePassword() {
+  const len = parseInt(document.getElementById('pwLength').value);
+  const upper = document.getElementById('pwUpper').checked;
+  const lower = document.getElementById('pwLower').checked;
+  const nums = document.getElementById('pwNumbers').checked;
+  const syms = document.getElementById('pwSymbols').checked;
+  let chars = '';
+  if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (nums) chars += '0123456789';
+  if (syms) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz';
+  let pw = '';
+  for (let i=0; i<len; i++) pw += chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('pwResult').textContent = pw;
+  updatePasswordStrength(pw);
+}
+
+function updatePasswordStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (pw.length >= 16) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[a-z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const labels = ['Juda zaif','Zaif','O\'rtacha','Yaxshi','Kuchli','Juda kuchli','Mukammal'];
+  const colors = ['#ff4757','#ff6b35','#f7971e','#f7c948','#43e97b','#00c6fb','#6c63ff'];
+  const pct = Math.min(100, score*14+2);
+  document.getElementById('pwStrengthBar').style.cssText = `width:${pct}%;background:${colors[Math.min(6,score)]};`;
+  document.getElementById('pwStrengthText').style.color = colors[Math.min(6,score)];
+  document.getElementById('pwStrengthText').textContent = labels[Math.min(6,score)];
+}
+
+function generateMultiple() {
+  const len = parseInt(document.getElementById('pwLength').value);
+  const upper = document.getElementById('pwUpper').checked;
+  const lower = document.getElementById('pwLower').checked;
+  const nums = document.getElementById('pwNumbers').checked;
+  const syms = document.getElementById('pwSymbols').checked;
+  let chars = '';
+  if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (nums) chars += '0123456789';
+  if (syms) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz';
+  let html = '<div style="background:var(--bg3);border-radius:var(--radius);padding:1rem;">';
+  for (let j=0;j<10;j++) {
+    let pw='';
+    for (let i=0;i<len;i++) pw+=chars[Math.floor(Math.random()*chars.length)];
+    html+=`<div style="font-family:JetBrains Mono,monospace;font-size:0.82rem;padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text2);"><span>${pw}</span><button onclick="navigator.clipboard.writeText('${pw}')" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:0.75rem;">Nusxa</button></div>`;
+  }
+  html+='</div>';
+  document.getElementById('multiplePasswords').innerHTML = html;
+}
+
+// =============================================
+// BMI
+// =============================================
+let bmiMetric = true;
+function bmiUnitChange() {
+  bmiMetric = document.querySelector('[name="bmiUnit"]:checked').value === 'metric';
+  document.getElementById('heightLabel').textContent = bmiMetric ? 'Bo\'y (sm)' : 'Bo\'y (dyuym)';
+  document.getElementById('weightLabel').textContent = bmiMetric ? 'Vazn (kg)' : 'Vazn (funt)';
+  document.getElementById('bmiHeight').value = bmiMetric ? 170 : 67;
+  document.getElementById('bmiWeight').value = bmiMetric ? 70 : 154;
+  calcBMI();
+}
+
+function calcBMI() {
+  let h = parseFloat(document.getElementById('bmiHeight').value);
+  let w = parseFloat(document.getElementById('bmiWeight').value);
+  if (!h || !w) return;
+  let hm, wk;
+  if (bmiMetric) { hm=h/100; wk=w; }
+  else { hm=h*0.0254; wk=w*0.453592; }
+  const bmi = wk/(hm*hm);
+  const bmiR = Math.round(bmi*10)/10;
+  document.getElementById('bmiNum').textContent = bmiR;
+  let cat, color, advice;
+  if (bmi<18.5) { cat='Kam vazn'; color='var(--accent3)'; advice='Vazningiz normal dan kam. Oziq-ovqat isteʼmolini oshirish va shifokor bilan maslahatlashish tavsiya etiladi.'; }
+  else if (bmi<25) { cat='Normal'; color='var(--accent3)'; advice='Vazningiz normal diapazonda. Sog\'lom ovqatlanish va jismoniy faollikni davom ettiring.'; }
+  else if (bmi<30) { cat='Ortiqcha vazn'; color='var(--warning)'; advice='Vazningiz biroz ortiqcha. Jismoniy faollikni oshiring va kaloriyani nazorat qiling.'; }
+  else { cat='Semizlik'; color='var(--danger)'; advice='Sog\'lik uchun xavfli. Shifokor yoki diyetolog bilan maslahatlashing.'; }
+  document.getElementById('bmiCat').textContent = cat;
+  document.getElementById('bmiNum').style.color = color;
+  document.getElementById('bmiAdvice').textContent = '💡 ' + advice;
+  // Needle position
+  const pos = Math.min(100, Math.max(0, (bmi-15)/25*100));
+  document.getElementById('bmiNeedle').style.left = pos+'%';
+  // Ideal weight
+  const idealMin = Math.round(18.5*hm*hm*10)/10;
+  const idealMax = Math.round(24.9*hm*hm*10)/10;
+  const unit = bmiMetric ? 'kg' : 'funt';
+  const iMin = bmiMetric ? idealMin : Math.round(idealMin/0.453592*10)/10;
+  const iMax = bmiMetric ? idealMax : Math.round(idealMax/0.453592*10)/10;
+  document.getElementById('idealWeight').innerHTML=`<div class="alert alert-success">✅ Ideal vazn diapazoni: <strong>${iMin} – ${iMax} ${unit}</strong></div>`;
+}
+
+// =============================================
+// COLOR TOOLS
+// =============================================
+function initColorPicker() {
+  const palette = ['#ff6b6b','#ff9f43','#feca57','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#00d2d3','#10ac84','#ee5a24','#576574','#222f3e','#c8d6e5','#8395a7','#2ecc71','#e74c3c','#3498db','#f39c12','#9b59b6','#1abc9c'];
+  document.getElementById('colorPalette').innerHTML = palette.map(c=>`<div class="palette-color" style="background:${c}" onclick="updateColor('${c}');document.getElementById('colorPicker').value='${c}';"></div>`).join('');
+  updateColor('#6c63ff');
+}
+
+function hexToRgb(hex) {
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? {r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)} : null;
+}
+
+function rgbToHsl(r,g,b) {
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s, l=(max+min)/2;
+  if (max===min) { h=s=0; }
+  else {
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}
+    h/=6;
+  }
+  return {h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+
+function rgbToCmyk(r,g,b) {
+  r/=255; g/=255; b/=255;
+  const k=1-Math.max(r,g,b);
+  if (k===1) return {c:0,m:0,y:0,k:100};
+  return {c:Math.round((1-r-k)/(1-k)*100),m:Math.round((1-g-k)/(1-k)*100),y:Math.round((1-b-k)/(1-k)*100),k:Math.round(k*100)};
+}
+
+function updateColor(hex) {
+  if (!hex) hex = document.getElementById('colorPicker').value;
+  const rgb = hexToRgb(hex);
+  if (!rgb) return;
+  const hsl = rgbToHsl(rgb.r,rgb.g,rgb.b);
+  const cmyk = rgbToCmyk(rgb.r,rgb.g,rgb.b);
+  const hexUpper = hex.toUpperCase().replace('#','');
+  document.getElementById('colorPreview').style.background = hex;
+  document.getElementById('colorPreview').textContent = '#'+hexUpper;
+  document.getElementById('colorPreview').style.color = hsl.l > 55 ? '#111' : '#fff';
+  document.getElementById('hexInput').value = '#'+hexUpper;
+  document.getElementById('rgbInput').value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+  document.getElementById('hslInput').value = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+  document.getElementById('cmykInput').value = `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%`;
+  // Tints
+  document.getElementById('colorTints').innerHTML = [90,70,50,30,15].map(p=>{
+    const tr=Math.round(rgb.r+(255-rgb.r)*p/100),tg=Math.round(rgb.g+(255-rgb.g)*p/100),tb=Math.round(rgb.b+(255-rgb.b)*p/100);
+    const tc=`rgb(${tr},${tg},${tb})`;
+    return `<div title="${tc}" style="flex:1;height:32px;border-radius:6px;background:${tc};cursor:pointer;border:1px solid rgba(255,255,255,0.1);" onclick="updateColor(rgbToHex(${tr},${tg},${tb}))"></div>`;
+  }).join('');
+  // Shades
+  document.getElementById('colorShades').innerHTML = [90,70,50,30,15].map(p=>{
+    const tr=Math.round(rgb.r*p/100),tg=Math.round(rgb.g*p/100),tb=Math.round(rgb.b*p/100);
+    const tc=`rgb(${tr},${tg},${tb})`;
+    return `<div title="${tc}" style="flex:1;height:32px;border-radius:6px;background:${tc};cursor:pointer;border:1px solid rgba(255,255,255,0.1);" onclick="updateColor(rgbToHex(${tr},${tg},${tb}))"></div>`;
+  }).join('');
+  // Complementary
+  const compH = (hsl.h+180)%360;
+  const analogH1 = (hsl.h+30)%360;
+  const analogH2 = (hsl.h-30+360)%360;
+  const triadH1 = (hsl.h+120)%360;
+  const triadH2 = (hsl.h+240)%360;
+  document.getElementById('colorComplementary').innerHTML = [
+    {h:hsl.h,s:hsl.s,l:hsl.l,label:'Asl'},
+    {h:compH,s:hsl.s,l:hsl.l,label:'To\'ldiruvchi'},
+    {h:analogH1,s:hsl.s,l:hsl.l,label:'Analog +30'},
+    {h:analogH2,s:hsl.s,l:hsl.l,label:'Analog -30'},
+    {h:triadH1,s:hsl.s,l:hsl.l,label:'Triada 1'},
+    {h:triadH2,s:hsl.s,l:hsl.l,label:'Triada 2'},
+  ].map(c=>`<div style="text-align:center;"><div style="width:48px;height:48px;border-radius:10px;background:hsl(${c.h},${c.s}%,${c.l}%);border:1px solid rgba(255,255,255,0.1);margin:0 auto 4px;cursor:pointer;" onclick="updateColor(hslToHex(${c.h},${c.s},${c.l}))"></div><div style="font-size:0.65rem;color:var(--text3);">${c.label}</div></div>`).join('');
+}
+
+function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function hslToHex(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};return '#'+f(0)+f(8)+f(4);}
+function colorFromHex(v){if(/^#[0-9A-Fa-f]{6}$/.test(v)){updateColor(v);document.getElementById('colorPicker').value=v;}}
+function colorFromRgb(v){const m=v.match(/(\d+),\s*(\d+),\s*(\d+)/);if(m){const h=rgbToHex(parseInt(m[1]),parseInt(m[2]),parseInt(m[3]));updateColor(h);document.getElementById('colorPicker').value=h;}}
+
+// =============================================
+// QR CODE (Canvas-based simple QR)
+// =============================================
+function qrTypeChange() {
+  const type = document.getElementById('qrType').value;
+  const inputs = document.getElementById('qrInputs');
+  const templates = {
+    text: `<div class="form-group"><label class="form-label">Matn</label><textarea class="form-textarea" id="qrText" rows="4" placeholder="QR kod uchun matn...">UzTools.uz — Hamma uchun bepul vositalar!</textarea></div>`,
+    url: `<div class="form-group"><label class="form-label">URL</label><input class="form-input" id="qrText" placeholder="https://example.com" value="https://uztools.uz"></div>`,
+    email: `<div class="form-group"><label class="form-label">Email</label><input class="form-input" id="qrEmail" placeholder="info@example.com" value="info@uztools.uz" oninput="buildEmailQR()"></div><div class="form-group"><label class="form-label">Mavzu</label><input class="form-input" id="qrSubject" placeholder="Mavzu..." oninput="buildEmailQR()"></div><input type="hidden" id="qrText" value="">`,
+    phone: `<div class="form-group"><label class="form-label">Telefon</label><input class="form-input" id="qrPhone" placeholder="+998 90 123 45 67" value="+998901234567" oninput="document.getElementById('qrText')?document.getElementById('qrText').value='tel:'+this.value:null;generateQR()"><input type="hidden" id="qrText" value="tel:+998901234567"></div>`,
+    sms: `<div class="form-group"><label class="form-label">Telefon</label><input class="form-input" id="qrSmsPhone" placeholder="+998 90 123 45 67" oninput="buildSMSQR()"></div><div class="form-group"><label class="form-label">Xabar</label><textarea class="form-textarea" id="qrSmsMsg" rows="2" oninput="buildSMSQR()"></textarea></div><input type="hidden" id="qrText" value="">`,
+    wifi: `<div class="form-group"><label class="form-label">Tarmoq nomi (SSID)</label><input class="form-input" id="qrWifiSSID" placeholder="MyWifi" oninput="buildWifiQR()"></div><div class="form-group"><label class="form-label">Parol</label><input class="form-input" id="qrWifiPass" placeholder="Parol" oninput="buildWifiQR()"></div><select class="form-select" id="qrWifiType" onchange="buildWifiQR()" style="margin-bottom:8px;"><option>WPA</option><option>WEP</option><option>nopass</option></select><input type="hidden" id="qrText" value="">`,
+    vcard: `<div class="row"><div class="col"><div class="form-group"><label class="form-label">Ism</label><input class="form-input" id="qrVName" value="Alisher" oninput="buildVCardQR()"></div></div><div class="col"><div class="form-group"><label class="form-label">Familiya</label><input class="form-input" id="qrVLast" value="Navoi" oninput="buildVCardQR()"></div></div></div><div class="form-group"><label class="form-label">Telefon</label><input class="form-input" id="qrVPhone" value="+998901234567" oninput="buildVCardQR()"></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="qrVEmail" value="alisher@example.com" oninput="buildVCardQR()"></div><input type="hidden" id="qrText" value="">`
+  };
+  inputs.innerHTML = templates[type] || templates.text;
+  setTimeout(generateQR, 100);
+}
+
+function buildEmailQR(){const e=document.getElementById('qrEmail')||{value:''};const s=document.getElementById('qrSubject')||{value:''};const t=document.getElementById('qrText');if(t)t.value='mailto:'+e.value+'?subject='+encodeURIComponent(s.value);generateQR();}
+function buildSMSQR(){const p=document.getElementById('qrSmsPhone')||{value:''};const m=document.getElementById('qrSmsMsg')||{value:''};const t=document.getElementById('qrText');if(t)t.value='smsto:'+p.value+':'+m.value;generateQR();}
+function buildWifiQR(){const s=document.getElementById('qrWifiSSID')||{value:''};const p=document.getElementById('qrWifiPass')||{value:''};const tp=document.getElementById('qrWifiType')||{value:'WPA'};const t=document.getElementById('qrText');if(t)t.value=`WIFI:T:${tp.value};S:${s.value};P:${p.value};;`;generateQR();}
+function buildVCardQR(){const fn=document.getElementById('qrVName')||{value:''};const ln=document.getElementById('qrVLast')||{value:''};const ph=document.getElementById('qrVPhone')||{value:''};const em=document.getElementById('qrVEmail')||{value:''};const t=document.getElementById('qrText');if(t)t.value=`BEGIN:VCARD\nVERSION:3.0\nN:${ln.value};${fn.value}\nFN:${fn.value} ${ln.value}\nTEL:${ph.value}\nEMAIL:${em.value}\nEND:VCARD`;generateQR();}
+
+function generateQR() {
+  const textEl = document.getElementById('qrText');
+  if (!textEl) return;
+  const text = textEl.value || textEl.textContent || 'UzTools';
+  const size = parseInt(document.getElementById('qrSize').value) || 200;
+  const canvas = document.getElementById('qrCanvas');
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  // Simple visual QR placeholder with pattern
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0,0,size,size);
+  // Draw a simple data matrix-like pattern
+  const qrData = simpleQRMatrix(text, size);
+  ctx.fillStyle = '#000000';
+  const cell = size/qrData.length;
+  for (let r=0;r<qrData.length;r++) {
+    for (let c=0;c<qrData[r].length;c++) {
+      if (qrData[r][c]) ctx.fillRect(c*cell, r*cell, cell, cell);
+    }
+  }
+  // Finder patterns (corners)
+  drawFinder(ctx,0,0,cell*7);
+  drawFinder(ctx,size-cell*7,0,cell*7);
+  drawFinder(ctx,0,size-cell*7,cell*7);
+}
+
+function drawFinder(ctx, x, y, sz) {
+  ctx.fillStyle='#fff'; ctx.fillRect(x,y,sz,sz);
+  ctx.fillStyle='#000'; ctx.fillRect(x,y,sz,sz);
+  ctx.fillStyle='#fff'; ctx.fillRect(x+sz/7,y+sz/7,sz*5/7,sz*5/7);
+  ctx.fillStyle='#000'; ctx.fillRect(x+sz*2/7,y+sz*2/7,sz*3/7,sz*3/7);
+}
+
+function simpleQRMatrix(text, size) {
+  const N = 25;
+  const mat = [];
+  // Generate pseudo-random but deterministic matrix from text
+  let seed = 0;
+  for (let i=0;i<text.length;i++) seed = ((seed<<5)-seed+text.charCodeAt(i))&0xffffffff;
+  const lcg = ()=>{ seed=(seed*1664525+1013904223)&0xffffffff; return Math.abs(seed)/2147483648; };
+  for (let r=0;r<N;r++){mat.push([]);for(let c=0;c<N;c++){mat[r].push(lcg()>0.5?1:0);}}
+  // Clear finder areas
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){mat[r][c]=0;mat[r][N-1-c]=0;mat[N-1-r][c]=0;}
+  return mat;
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qrCanvas');
+  const a = document.createElement('a');
+  a.download = 'qrcode-uztools.png';
+  a.href = canvas.toDataURL();
+  a.click();
+}
+function copyQR() { document.getElementById('qrCanvas').toBlob(b=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>showCopied());}catch(e){showCopied();}}); }
+
+// =============================================
+// NOTES
+// =============================================
+let notes = [], currentNoteId = null;
+function initNotes() {
+  try { notes = JSON.parse(localStorage.getItem('uztools_notes')||'[]'); } catch(e){notes=[];}
+  if (!notes.length) {
+    notes = [{id:Date.now(),title:'Xush kelibsiz! 👋',content:'UzTools eslatma daftariga xush kelibsiz!\n\nBu yerda eslatmalaringizni saqlashingiz mumkin. Barcha eslatmalar brauzeringizda saqlanadi va sahifani yangilanganida ham yo\'qolmaydi.\n\nYangi eslatma yaratish uchun "+ Yangi" tugmasini bosing.',date:new Date().toLocaleDateString('uz-UZ')}];
+    saveNotes();
+  }
+  renderNotesList();
+  if (notes.length) openNote(notes[0].id);
+}
+
+function renderNotesList() {
+  const list = document.getElementById('notesList');
+  list.innerHTML = notes.map(n=>`
+    <div class="note-item ${n.id===currentNoteId?'active':''}" onclick="openNote(${n.id})">
+      <div class="note-item-title">${n.title||'Sarlavsiz'}</div>
+      <div class="note-item-preview">${(n.content||'').substring(0,50)}</div>
+      <div class="note-item-date">${n.date}</div>
+    </div>
+  `).join('');
+}
+
+function openNote(id) {
+  currentNoteId = id;
+  const note = notes.find(n=>n.id===id);
+  if (note) {
+    document.getElementById('noteTitle').value = note.title||'';
+    document.getElementById('noteContent').value = note.content||'';
+  }
+  renderNotesList();
+}
+
+function newNote() {
+  const note = {id:Date.now(),title:'Yangi eslatma',content:'',date:new Date().toLocaleDateString('uz-UZ')};
+  notes.unshift(note);
+  saveNotes(); renderNotesList(); openNote(note.id);
+  document.getElementById('noteTitle').focus();
+  document.getElementById('noteTitle').select();
+}
+
+function saveNote() {
+  if (!currentNoteId) return;
+  const idx = notes.findIndex(n=>n.id===currentNoteId);
+  if (idx>=0) {
+    notes[idx].title = document.getElementById('noteTitle').value||'Sarlavsiz';
+    notes[idx].content = document.getElementById('noteContent').value;
+    notes[idx].date = new Date().toLocaleDateString('uz-UZ');
+    saveNotes(); renderNotesList();
+    document.getElementById('noteSaveStatus').textContent = '✓ Saqlandi '+new Date().toLocaleTimeString('uz-UZ');
+    setTimeout(()=>document.getElementById('noteSaveStatus').textContent='',3000);
+  }
+}
+
+let autoSaveTimeout;
+function autoSaveNote() {
+  clearTimeout(autoSaveTimeout);
+  autoSaveTimeout = setTimeout(saveNote, 1500);
+}
+
+function deleteNote() {
+  if (!currentNoteId) return;
+  if (!confirm('Bu eslatmani o\'chirishni xohlaysizmi?')) return;
+  notes = notes.filter(n=>n.id!==currentNoteId);
+  currentNoteId = null;
+  saveNotes(); renderNotesList();
+  if (notes.length) openNote(notes[0].id);
+  else { document.getElementById('noteTitle').value=''; document.getElementById('noteContent').value=''; }
+}
+
+function saveNotes() { try{localStorage.setItem('uztools_notes',JSON.stringify(notes));}catch(e){} }
+
+// =============================================
+// CURRENCY
+// =============================================
+const CURRENCIES = {
+  UZS:{name:'O\'zbek so\'mi',flag:'🇺🇿',rate:1},
+  USD:{name:'AQSH dollari',flag:'🇺🇸',rate:0.0000789},
+  EUR:{name:'Yevro',flag:'🇪🇺',rate:0.0000728},
+  RUB:{name:'Rossiya rubli',flag:'🇷🇺',rate:0.00714},
+  KZT:{name:'Qozog\'iston tengesi',flag:'🇰🇿',rate:0.0357},
+  GBP:{name:'Britaniya funt',flag:'🇬🇧',rate:0.0000623},
+  CNY:{name:'Xitoy yuani',flag:'🇨🇳',rate:0.000571},
+  AED:{name:'BAA dirhami',flag:'🇦🇪',rate:0.000290},
+  TRY:{name:'Turk lirasi',flag:'🇹🇷',rate:0.00256},
+  JPY:{name:'Yaponiya iyenasi',flag:'🇯🇵',rate:0.01185},
+  KRW:{name:'Janubiy Koreya voni',flag:'🇰🇷',rate:0.106},
+  SAR:{name:'Saudiya riyoli',flag:'🇸🇦',rate:0.000296},
+  INR:{name:'Hindiston rupiyasi',flag:'🇮🇳',rate:0.00659},
+  CHF:{name:'Shveytsariya franki',flag:'🇨🇭',rate:0.0000709},
+  CAD:{name:'Kanada dollari',flag:'🇨🇦',rate:0.000108},
+  AUD:{name:'Avstraliya dollari',flag:'🇦🇺',rate:0.000121},
+  BYN:{name:'Belarus rubli',flag:'🇧🇾',rate:0.000258},
+  UAH:{name:'Ukraina grivnasi',flag:'🇺🇦',rate:0.00319},
+  KGS:{name:'Qirg\'iz somi',flag:'🇰🇬',rate:0.00701},
+  TJS:{name:'Tojik somoniysi',flag:'🇹🇯',rate:0.000861}
+};
+
+function initCurrencySelects() {
+  const opts = Object.entries(CURRENCIES).map(([k,v])=>`<option value="${k}">${v.flag} ${k} — ${v.name}</option>`).join('');
+  document.getElementById('currFrom').innerHTML = opts;
+  document.getElementById('currTo').innerHTML = opts;
+  document.getElementById('currFrom').value = 'USD';
+  document.getElementById('currTo').value = 'UZS';
+}
+
+function convertCurrency() {
+  const amt = parseFloat(document.getElementById('currAmount').value)||0;
+  const from = document.getElementById('currFrom').value;
+  const to = document.getElementById('currTo').value;
+  const uzsAmt = amt / CURRENCIES[from].rate;
+  const result = uzsAmt * CURRENCIES[to].rate;
+  const r = result >= 1000 ? Math.round(result).toLocaleString('uz-UZ') : parseFloat(result.toFixed(4));
+  document.getElementById('currResult').innerHTML = `${amt.toLocaleString()} ${from} = <span style="color:var(--accent5)">${r}</span> ${to}`;
+}
+
+function renderCurrencyGrid() {
+  const mainCurrs = ['USD','EUR','RUB','KZT','GBP','CNY','AED','TRY','JPY','KRW','SAR','INR'];
+  document.getElementById('currencyGrid').innerHTML = mainCurrs.map(c=>{
+    const rate = 1/CURRENCIES[c].rate;
+    const r = rate >= 100 ? Math.round(rate).toLocaleString() : parseFloat(rate.toFixed(2));
+    return `<div class="currency-card"><div class="currency-flag">${CURRENCIES[c].flag}</div><div class="currency-code">${c}</div><div class="currency-amount">1 ${c} = ${r} UZS</div></div>`;
+  }).join('');
+}
+
+// =============================================
+// HASH (Simple implementations)
+// =============================================
+let hashMethod = 'md5';
+function setHashMethod(m, btn) {
+  hashMethod = m;
+  document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function generateHash() {
+  const text = document.getElementById('hashInput').value;
+  if (!text) return;
+  const el = document.getElementById('hashResult');
+  if (hashMethod === 'md5') {
+    el.textContent = md5(text);
+  } else {
+    try {
+      const enc = new TextEncoder().encode(text);
+      const alg = hashMethod==='sha1'?'SHA-1':hashMethod==='sha256'?'SHA-256':'SHA-512';
+      const buf = await crypto.subtle.digest(alg, enc);
+      el.textContent = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    } catch(e) { el.textContent = 'Xato: '+e.message; }
+  }
+}
+
+function md5(str) {
+  function safeAdd(x,y){const lsw=(x&0xFFFF)+(y&0xFFFF);return((x>>16)+(y>>16)+(lsw>>16)<<16)|(lsw&0xFFFF);}
+  function bitRotate(num,cnt){return num<<cnt|num>>>32-cnt;}
+  function md5cmn(q,a,b,x,s,t){return safeAdd(bitRotate(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b);}
+  function md5ff(a,b,c,d,x,s,t){return md5cmn(b&c|~b&d,a,b,x,s,t);}
+  function md5gg(a,b,c,d,x,s,t){return md5cmn(b&d|c&~d,a,b,x,s,t);}
+  function md5hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t);}
+  function md5ii(a,b,c,d,x,s,t){return md5cmn(c^(b|~d),a,b,x,s,t);}
+  const x = [];
+  for (let i=0;i<str.length*8;i+=8) x[i>>5]|=(str.charCodeAt(i/8)&0xFF)<<(i%32);
+  x[str.length*8>>5]|=0x80<<str.length*8%32;
+  x[(str.length*8+64>>>9<<4)+14]=str.length*8;
+  let [a,b,c,d]=[1732584193,-271733879,-1732584194,271733878];
+  for (let i=0;i<x.length;i+=16) {
+    const [oa,ob,oc,od]=[a,b,c,d];
+    a=md5ff(a,b,c,d,x[i],7,-680876936);d=md5ff(d,a,b,c,x[i+1],12,-389564586);c=md5ff(c,d,a,b,x[i+2],17,606105819);b=md5ff(b,c,d,a,x[i+3],22,-1044525330);
+    a=md5ff(a,b,c,d,x[i+4],7,-176418897);d=md5ff(d,a,b,c,x[i+5],12,1200080426);c=md5ff(c,d,a,b,x[i+6],17,-1473231341);b=md5ff(b,c,d,a,x[i+7],22,-45705983);
+    a=md5ff(a,b,c,d,x[i+8],7,1770035416);d=md5ff(d,a,b,c,x[i+9],12,-1958414417);c=md5ff(c,d,a,b,x[i+10],17,-42063);b=md5ff(b,c,d,a,x[i+11],22,-1990404162);
+    a=md5ff(a,b,c,d,x[i+12],7,1804603682);d=md5ff(d,a,b,c,x[i+13],12,-40341101);c=md5ff(c,d,a,b,x[i+14],17,-1502002290);b=md5ff(b,c,d,a,x[i+15],22,1236535329);
+    a=md5gg(a,b,c,d,x[i+1],5,-165796510);d=md5gg(d,a,b,c,x[i+6],9,-1069501632);c=md5gg(c,d,a,b,x[i+11],14,643717713);b=md5gg(b,c,d,a,x[i],20,-373897302);
+    a=md5gg(a,b,c,d,x[i+5],5,-701558691);d=md5gg(d,a,b,c,x[i+10],9,38016083);c=md5gg(c,d,a,b,x[i+15],14,-660478335);b=md5gg(b,c,d,a,x[i+4],20,-405537848);
+    a=md5gg(a,b,c,d,x[i+9],5,568446438);d=md5gg(d,a,b,c,x[i+14],9,-1019803690);c=md5gg(c,d,a,b,x[i+3],14,-187363961);b=md5gg(b,c,d,a,x[i+8],20,1163531501);
+    a=md5gg(a,b,c,d,x[i+13],5,-1444681467);d=md5gg(d,a,b,c,x[i+2],9,-51403784);c=md5gg(c,d,a,b,x[i+7],14,1735328473);b=md5gg(b,c,d,a,x[i+12],20,-1926607734);
+    a=md5hh(a,b,c,d,x[i+5],4,-378558);d=md5hh(d,a,b,c,x[i+8],11,-2022574463);c=md5hh(c,d,a,b,x[i+11],16,1839030562);b=md5hh(b,c,d,a,x[i+14],23,-35309556);
+    a=md5hh(a,b,c,d,x[i+1],4,-1530992060);d=md5hh(d,a,b,c,x[i+4],11,1272893353);c=md5hh(c,d,a,b,x[i+7],16,-155497632);b=md5hh(b,c,d,a,x[i+10],23,-1094730640);
+    a=md5hh(a,b,c,d,x[i+13],4,681279174);d=md5hh(d,a,b,c,x[i],11,-358537222);c=md5hh(c,d,a,b,x[i+3],16,-722521979);b=md5hh(b,c,d,a,x[i+6],23,76029189);
+    a=md5hh(a,b,c,d,x[i+9],4,-640364487);d=md5hh(d,a,b,c,x[i+12],11,-421815835);c=md5hh(c,d,a,b,x[i+15],16,530742520);b=md5hh(b,c,d,a,x[i+2],23,-995338651);
+    a=md5ii(a,b,c,d,x[i],6,-198630844);d=md5ii(d,a,b,c,x[i+7],10,1126891415);c=md5ii(c,d,a,b,x[i+14],15,-1416354905);b=md5ii(b,c,d,a,x[i+5],21,-57434055);
+    a=md5ii(a,b,c,d,x[i+12],6,1700485571);d=md5ii(d,a,b,c,x[i+3],10,-1894986606);c=md5ii(c,d,a,b,x[i+10],15,-1051523);b=md5ii(b,c,d,a,x[i+1],21,-2054922799);
+    a=md5ii(a,b,c,d,x[i+8],6,1873313359);d=md5ii(d,a,b,c,x[i+15],10,-30611744);c=md5ii(c,d,a,b,x[i+6],15,-1560198380);b=md5ii(b,c,d,a,x[i+13],21,1309151649);
+    a=md5ii(a,b,c,d,x[i+4],6,-145523070);d=md5ii(d,a,b,c,x[i+11],10,-1120210379);c=md5ii(c,d,a,b,x[i+2],15,718787259);b=md5ii(b,c,d,a,x[i+9],21,-343485551);
+    a=safeAdd(a,oa);b=safeAdd(b,ob);c=safeAdd(c,oc);d=safeAdd(d,od);
+  }
+  return [a,b,c,d].map(n=>Array.from({length:4},(_,i)=>(n>>i*8&0xFF).toString(16).padStart(2,'0')).join('')).join('');
+}
+
+// =============================================
+// AGE CALCULATOR
+// =============================================
+function calcAge() {
+  const birth = new Date(document.getElementById('birthDate').value);
+  const compare = new Date(document.getElementById('compareDate').value || new Date());
+  if (isNaN(birth)) return;
+  let years=compare.getFullYear()-birth.getFullYear();
+  let months=compare.getMonth()-birth.getMonth();
+  let days=compare.getDate()-birth.getDate();
+  if (days<0){months--;days+=new Date(compare.getFullYear(),compare.getMonth(),0).getDate();}
+  if (months<0){years--;months+=12;}
+  const totalDays=Math.floor((compare-birth)/86400000);
+  const totalWeeks=Math.floor(totalDays/7);
+  const totalHours=totalDays*24;
+  const nextBirth=new Date(compare.getFullYear(),birth.getMonth(),birth.getDate());
+  if (nextBirth<=compare) nextBirth.setFullYear(compare.getFullYear()+1);
+  const daysToNext=Math.ceil((nextBirth-compare)/86400000);
+  document.getElementById('ageResult').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:1rem;">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">${years}</div><div style="font-size:0.8rem;color:var(--text3);">Yil</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent5);">${months}</div><div style="font-size:0.8rem;color:var(--text3);">Oy</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent3);">${days}</div><div style="font-size:0.8rem;color:var(--text3);">Kun</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--warning);">${totalDays.toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Jami kun</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">${totalWeeks.toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Hafta</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent5);">${totalHours.toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Soat</div></div>
+    </div>
+    <div class="alert alert-info">🎂 Keyingi tug'ilgan kunigacha <strong>${daysToNext}</strong> kun qoldi.</div>
+  `;
+}
+
+// =============================================
+// LOAN CALCULATOR
+// =============================================
+function calcLoan() {
+  const P = parseFloat(document.getElementById('loanAmount').value)||0;
+  const annualRate = parseFloat(document.getElementById('loanRate').value)||0;
+  const n = parseInt(document.getElementById('loanTerm').value)||0;
+  if (!P||!n) return;
+  const r = annualRate/100/12;
+  let monthly;
+  if (r===0) monthly=P/n;
+  else monthly=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  const total=monthly*n;
+  const totalInterest=total-P;
+  document.getElementById('loanResult').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:1.8rem;font-weight:800;color:var(--accent);">${Math.round(monthly).toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Oylik to'lov (so'm)</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:1.8rem;font-weight:800;color:var(--accent5);">${Math.round(total).toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Jami to'lov (so'm)</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:1.8rem;font-weight:800;color:var(--warning);">${Math.round(totalInterest).toLocaleString()}</div><div style="font-size:0.8rem;color:var(--text3);">Jami foiz (so'm)</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;"><div style="font-size:1.8rem;font-weight:800;color:var(--accent3);">${(totalInterest/P*100).toFixed(1)}%</div><div style="font-size:0.8rem;color:var(--text3);">Foiz ulushi</div></div>
+    </div>
+  `;
+  // Schedule (first 6 months)
+  let balance=P;
+  let rows='';
+  const showMonths = Math.min(n, 12);
+  for(let i=1;i<=showMonths;i++){
+    const interest=balance*r;
+    const principal=monthly-interest;
+    balance-=principal;
+    rows+=`<tr><td>${i}</td><td>${Math.round(monthly).toLocaleString()}</td><td>${Math.round(principal).toLocaleString()}</td><td>${Math.round(interest).toLocaleString()}</td><td>${Math.max(0,Math.round(balance)).toLocaleString()}</td></tr>`;
+  }
+  if (n>12) rows+=`<tr><td colspan="5" style="text-align:center;color:var(--text3);font-style:italic;">... va yana ${n-12} oy</td></tr>`;
+  document.getElementById('loanSchedule').innerHTML=`
+    <h4 style="margin-bottom:1rem;color:var(--text2);">To'lov jadvali (${showMonths} oy)</h4>
+    <table><thead><tr><th>Oy</th><th>To'lov</th><th>Asosiy</th><th>Foiz</th><th>Qoldiq</th></tr></thead><tbody>${rows}</tbody></table>
+  `;
+}
+
+// =============================================
+// RANDOM
+// =============================================
+function genRandNum() {
+  const min=parseInt(document.getElementById('randMin').value)||0;
+  const max=parseInt(document.getElementById('randMax').value)||100;
+  document.getElementById('randNumResult').textContent=Math.floor(Math.random()*(max-min+1))+min;
+}
+function genRandPick() {
+  const items=document.getElementById('randListInput').value.split('\n').filter(l=>l.trim());
+  if (!items.length) return;
+  document.getElementById('randPickResult').textContent=items[Math.floor(Math.random()*items.length)];
+}
+function genUUID() {
+  const u='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&0x3|0x8).toString(16);});
+  document.getElementById('uuidResult').textContent=u;
+}
+function rollDice() {
+  const count=parseInt(document.getElementById('diceCount').value)||1;
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const res=document.getElementById('diceResult');
+  res.innerHTML='';
+  let total=0;
+  for(let i=0;i<count;i++){
+    const v=Math.floor(Math.random()*6);
+    total+=v+1;
+    const d=document.createElement('span');
+    d.style.cssText='font-size:2.5rem;cursor:pointer;';
+    d.textContent=faces[v];
+    res.appendChild(d);
+  }
+  const t=document.createElement('div');
+  t.style.cssText='width:100%;text-align:center;color:var(--text2);font-size:0.9rem;margin-top:8px;';
+  t.textContent='Jami: '+total;
+  res.appendChild(t);
+}
+function flipCoin() { document.getElementById('coinResult').textContent=Math.random()>0.5?'🪙 TURA':'🪙 YAZI'; }
+function shuffleList() {
+  let lines=document.getElementById('shuffleInput').value.split('\n').filter(l=>l.trim());
+  for(let i=lines.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[lines[i],lines[j]]=[lines[j],lines[i]];}
+  document.getElementById('shuffleResult').textContent=lines.join('\n');
+}
+
+// =============================================
+// PERCENTAGE
+// =============================================
+function calcP1(){const x=parseFloat(document.getElementById('p1x').value)||0;const y=parseFloat(document.getElementById('p1y').value)||0;const r=x*y/100;document.getElementById('p1result').innerHTML=`${x} ning ${y}% = <strong style="color:var(--accent);font-size:1.2rem;">${r.toLocaleString()}</strong>`;}
+function calcP2(){const x=parseFloat(document.getElementById('p2x').value)||0;const y=parseFloat(document.getElementById('p2y').value)||0;const r=y?x/y*100:0;document.getElementById('p2result').innerHTML=`${x}, ${y} ning <strong style="color:var(--accent);font-size:1.2rem;">${r.toFixed(2)}%</strong>ini tashkil qiladi`;}
+function calcP3(){const o=parseFloat(document.getElementById('p3old').value)||0;const n=parseFloat(document.getElementById('p3new').value)||0;const r=o?(n-o)/o*100:0;const sign=r>=0?'+':'';const color=r>=0?'var(--accent3)':'var(--danger)';document.getElementById('p3result').innerHTML=`<strong style="color:${color};font-size:1.2rem;">${sign}${r.toFixed(2)}%</strong> ${r>=0?'oshgan':'kamaygan'}`;}
+function calcP4(){const p=parseFloat(document.getElementById('p4price').value)||0;const d=parseFloat(document.getElementById('p4disc').value)||0;const disc=p*d/100;const final=p-disc;document.getElementById('p4result').innerHTML=`Chegirmali narx: <strong style="color:var(--accent3);font-size:1.2rem;">${Math.round(final).toLocaleString()}</strong> so'm — Chegirma: <strong style="color:var(--danger);">${Math.round(disc).toLocaleString()}</strong> so'm`;}
+
+// =============================================
+// WORD COUNTER / TEXT ANALYZER
+// =============================================
+function analyzeText() {
+  const text = document.getElementById('wcText').value;
+  const words = text.trim() ? text.trim().split(/\s+/) : [];
+  const chars = text.length;
+  const charsNoSpace = text.replace(/\s/g,'').length;
+  const lines = text ? text.split('\n').length : 0;
+  const sentences = (text.match(/[.!?]+/g)||[]).length;
+  const paragraphs = text.split(/\n\n+/).filter(p=>p.trim()).length;
+  const readTime = Math.max(1, Math.ceil(words.length/200));
+  const speakTime = Math.max(1, Math.ceil(words.length/130));
+
+  document.getElementById('wcStats').innerHTML = [
+    {l:'Belgilar (bo\'shliq bilan)',v:chars,c:'var(--accent)'},
+    {l:'Belgilar (bo\'shliqsiz)',v:charsNoSpace,c:'var(--accent5)'},
+    {l:'So\'zlar',v:words.length,c:'var(--accent3)'},
+    {l:'Gaplar',v:sentences,c:'var(--warning)'},
+    {l:'Qatorlar',v:lines,c:'var(--danger)'},
+    {l:'Paragraflar',v:paragraphs,c:'var(--accent)'},
+    {l:'O\'qish vaqti (daqiqa)',v:readTime,c:'var(--accent5)'},
+    {l:'Gapirish vaqti (daqiqa)',v:speakTime,c:'var(--accent3)'},
+  ].map(s=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem;text-align:center;"><div style="font-size:1.6rem;font-weight:700;color:${s.c};">${s.v.toLocaleString()}</div><div style="font-size:0.7rem;color:var(--text3);">${s.l}</div></div>`).join('');
+
+  // Top words
+  const freq = {};
+  words.forEach(w=>{const k=w.toLowerCase().replace(/[^a-zа-яёo'ğşçü]/g,'');if(k.length>2)freq[k]=(freq[k]||0)+1;});
+  const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxF = sorted[0]?.[1]||1;
+  document.getElementById('wcTopWords').innerHTML = sorted.length ? sorted.map(([w,f])=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="width:80px;font-size:0.85rem;color:var(--text2);">${w}</span>
+      <div style="flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${f/maxF*100}%;background:var(--accent);border-radius:3px;"></div></div>
+      <span style="font-size:0.8rem;color:var(--text3);">${f}</span>
+    </div>
+  `).join('') : '<p style="color:var(--text3);font-size:0.85rem;">Matn kiriting</p>';
+
+  // Letter distribution
+  const letters = {};
+  text.toLowerCase().replace(/[^a-zа-яёo'ğşçü]/g,'').split('').forEach(l=>{letters[l]=(letters[l]||0)+1;});
+  const lSorted = Object.entries(letters).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  const maxL = lSorted[0]?.[1]||1;
+  document.getElementById('wcLetterDist').innerHTML = lSorted.length ? lSorted.map(([l,f])=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <span style="width:20px;font-size:0.85rem;font-weight:600;color:var(--accent5);">${l}</span>
+      <div style="flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${f/maxL*100}%;background:var(--accent5);border-radius:3px;"></div></div>
+      <span style="font-size:0.75rem;color:var(--text3);">${f}</span>
+    </div>
+  `).join('') : '<p style="color:var(--text3);font-size:0.85rem;">Matn kiriting</p>';
+}
+
+// =============================================
+// KEYBOARD SHORTCUT
+// =============================================
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') showHome();
+});
+</script>
+</body>
+</html>
