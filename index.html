@@ -581,7 +581,7 @@
       <span class="search-icon">🔍</span>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-num" id="toolCount">20+</div><div class="stat-label">Vositalar</div></div>
+
       <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Bepul</div></div>
       <div class="stat"><div class="stat-num">0</div><div class="stat-label">Reklama</div></div>
       <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Foydalanish</div></div>
@@ -1261,7 +1261,7 @@ Beshinchi</textarea>
     <a onclick="openTool('currency')">💱 Valyuta</a>
     <a onclick="openTool('random')">🎲 Tasodifiy</a>
   </div>
-  <div class="footer-bottom">© 2024 UzTools — Barcha huquqlar himoyalangan. Bepul va ochiq manba.</div>
+  <div class="footer-bottom">© 2026 UzTools — Barcha huquqlar himoyalangan. Bepul va ochiq manba.</div>
 </footer>
 
 <!-- === ALL JAVASCRIPT === -->
@@ -2337,7 +2337,7 @@ function analyzeText() {
 
   // Letter distribution
   const letters = {};
-  text.toLowerCase().replace(/[^a-zа-яёo'ğşçü]/g,'').split('').forEach(l=>{letters[l]=(letters[l]||0)+1;});
+  text.toLowerCase().replace(/[^a-za-яёo'ğşçü]/g,'').split('').forEach(l=>{letters[l]=(letters[l]||0)+1;});
   const lSorted = Object.entries(letters).sort((a,b)=>b[1]-a[1]).slice(0,20);
   const maxL = lSorted[0]?.[1]||1;
   document.getElementById('wcLetterDist').innerHTML = lSorted.length ? lSorted.map(([l,f])=>`
